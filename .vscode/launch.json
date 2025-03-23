@@ -1,0 +1,24 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch MCP Server with Stdio",
+            "skipFiles": ["**/node_modules/**"],
+            "cwd": "${workspaceFolder}",
+            "program": "build/index.js",
+            "args": [
+                "--site",
+                "global"
+                // "--session",
+                // "<YOUR_LEETCODE_SESSION>"
+            ],
+            "preLaunchTask": "tsc: build - tsconfig.json",
+            "outFiles": ["${workspaceFolder}/build/**/*.js"]
+        }
+    ]
+}
