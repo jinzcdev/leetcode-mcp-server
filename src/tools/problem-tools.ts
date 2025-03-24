@@ -61,11 +61,11 @@ export class ProblemToolRegistry extends ToolRegistry {
         // Search problems tool
         this.server.tool(
             "leetcode_search_problems",
-            "Searches for LeetCode problems based on multiple filter criteria including categories, tags, and difficulty levels, with pagination support",
+            "Searches for LeetCode problems based on multiple filter criteria including categories, tags, difficulty levels, and keywords, with pagination support",
             {
                 category: z
                     .enum(PROBLEM_CATEGORIES as [string])
-                    .optional()
+                    .default("all-code-essentials")
                     .describe(
                         "Problem category filter (e.g., 'algorithms', 'database', 'shell') to narrow down the problem domain"
                     ),
@@ -81,9 +81,16 @@ export class ProblemToolRegistry extends ToolRegistry {
                     .describe(
                         "Problem difficulty level filter to show only problems of a specific difficulty"
                     ),
+                searchKeywords: z
+                    .string()
+                    .optional()
+                    .describe(
+                        "Keywords to search in problem titles and descriptions"
+                    ),
                 limit: z
                     .number()
                     .optional()
+                    .default(10)
                     .describe(
                         "Maximum number of problems to return in a single request (for pagination)"
                     ),
@@ -92,20 +99,28 @@ export class ProblemToolRegistry extends ToolRegistry {
                     .optional()
                     .describe("Number of problems to skip (for pagination)")
             },
-            async ({ category, tags, difficulty, limit, offset }) => {
+            async ({
+                category,
+                tags,
+                difficulty,
+                limit,
+                offset,
+                searchKeywords
+            }) => {
                 const data = await this.leetcodeService.searchProblems(
                     category,
                     tags,
                     difficulty,
                     limit,
-                    offset
+                    offset,
+                    searchKeywords
                 );
                 return {
                     content: [
                         {
                             type: "text",
                             text: JSON.stringify({
-                                filters: { tags, difficulty },
+                                filters: { tags, difficulty, searchKeywords },
                                 pagination: { limit, offset },
                                 problems: data
                             })

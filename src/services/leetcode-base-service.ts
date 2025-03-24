@@ -125,6 +125,7 @@ export interface LeetCodeBaseService {
      * @param difficulty - Optional difficulty level filter
      * @param limit - Optional maximum number of problems to return
      * @param offset - Optional number of problems to skip (for pagination)
+     * @param searchKeywords - Optional search keywords to filter problems by title or description
      * @returns Promise resolving to matching problems data
      */
     searchProblems(
@@ -132,7 +133,8 @@ export interface LeetCodeBaseService {
         tags?: string[],
         difficulty?: string,
         limit?: number,
-        offset?: number
+        offset?: number,
+        searchKeywords?: string
     ): Promise<any>;
 
     /**

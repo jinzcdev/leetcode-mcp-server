@@ -1,4 +1,5 @@
 import { Credential, LeetCode } from "leetcode-query";
+import { SEARCH_PROBLEMS_QUERY } from "./graphql/global/search-problems.js";
 import { SOLUTION_ARTICLE_DETAIL_QUERY } from "./graphql/global/solution-article-detail.js";
 import { SOLUTION_ARTICLES_QUERY } from "./graphql/global/solution-articles.js";
 import { LeetCodeBaseService } from "./leetcode-base-service.js";
@@ -195,25 +196,33 @@ export class LeetCodeGlobalService implements LeetCodeBaseService {
         category?: string,
         tags?: string[],
         difficulty?: string,
-        limit: number = 50,
-        offset: number = 0
+        limit: number = 10,
+        offset: number = 0,
+        searchKeywords?: string
     ): Promise<any> {
-        const filters: any = {};
-        if (difficulty) {
-            filters.difficulty = difficulty.toUpperCase();
-        }
-        if (tags && tags.length > 0) {
-            filters.tags = tags;
-        }
-
         try {
-            const problems = await this.leetCodeApi.problems({
-                category,
-                filters,
-                limit,
-                offset
+            const filters: any = {};
+            if (difficulty) {
+                filters.difficulty = difficulty.toUpperCase();
+            }
+            if (tags && tags.length > 0) {
+                filters.tags = tags;
+            }
+            if (searchKeywords) {
+                filters.searchKeywords = searchKeywords;
+            }
+
+            const response = await this.leetCodeApi.graphql({
+                query: SEARCH_PROBLEMS_QUERY,
+                variables: {
+                    categorySlug: category,
+                    limit,
+                    skip: offset,
+                    filters
+                }
             });
-            return problems;
+
+            return response.data?.problemsetQuestionList;
         } catch (error) {
             console.error("Error searching problems:", error);
             throw error;
