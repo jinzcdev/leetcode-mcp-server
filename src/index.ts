@@ -27,9 +27,6 @@ function parseArgs() {
             s: "site",
             c: "session",
             h: "help"
-        },
-        default: {
-            site: "global"
         }
     });
 
@@ -46,16 +43,9 @@ function parseArgs() {
     }
 
     const options = {
-        site: args.site,
-        session: args.session
+        site: args.site || process.env.LEETCODE_SITE || "global",
+        session: args.session || process.env.LEETCODE_SESSION
     };
-
-    if (process.env.LEETCODE_SITE) {
-        options.site = process.env.LEETCODE_SITE;
-    }
-    if (process.env.LEETCODE_SESSION) {
-        options.session = process.env.LEETCODE_SESSION;
-    }
 
     if (options.site !== "global" && options.site !== "cn") {
         console.error("The site must be either 'global' or 'cn'");
