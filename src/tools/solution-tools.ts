@@ -12,7 +12,7 @@ export class SolutionToolRegistry extends ToolRegistry {
         // Solution articles listing tool (Global-specific)
         this.server.tool(
             "leetcode_solution_article_list",
-            "Retrieves a list of community solution articles for a specific LeetCode problem on the Global platform, including metadata like author details, reactions, and summary. Note that this tool does not return the actual content of solution articles, only their metadata.",
+            "Retrieves a list of community solution articles for a specific LeetCode problem, including only metadata like topicId. To view the full content of a solution article, use the 'leetcode_solution_article' tool with the topicId returned by this tool.",
             {
                 questionSlug: z
                     .string()
@@ -22,7 +22,7 @@ export class SolutionToolRegistry extends ToolRegistry {
                 limit: z
                     .number()
                     .optional()
-                    .default(20)
+                    .default(5)
                     .describe(
                         "Maximum number of solution articles to return per request. Used for pagination and controlling response size. Default is 20 if not specified. Must be a positive integer."
                     ),
@@ -33,7 +33,8 @@ export class SolutionToolRegistry extends ToolRegistry {
                         "Number of solution articles to skip before starting to collect results. Used in conjunction with 'limit' for implementing pagination. Default is 0 if not specified. Must be a non-negative integer."
                     ),
                 orderBy: z
-                    .enum(["DEFAULT", "MOST_VOTES", "MOST_RECENT"])
+                    .enum(["HOT", " MOST_RECENT", "MOST_VOTES"])
+                    .default("HOT")
                     .optional()
                     .describe(
                         "Sorting criteria for the returned solution articles. 'DEFAULT' sorts by LeetCode's default algorithm (typically a combination of recency and popularity), 'MOST_VOTES' sorts by the number of upvotes (highest first), and 'MOST_RECENT' sorts by publication date (newest first)."
@@ -104,8 +105,8 @@ export class SolutionToolRegistry extends ToolRegistry {
 
         // Solution article detail tool (Global-specific)
         this.server.tool(
-            "leetcode_solution_article_detail",
-            "Retrieves the complete content and metadata of a specific solution article on LeetCode Global, including the full article text, author information, and related navigation links",
+            "leetcode_solution_article",
+            "Retrieves the complete content and metadata of a specific solution article, including the full article text, author information, and related navigation links",
             {
                 topicId: z
                     .string()
@@ -152,12 +153,12 @@ export class SolutionToolRegistry extends ToolRegistry {
         // Solution articles listing tool (CN-specific)
         this.server.tool(
             "leetcode_solution_article_list",
-            "Retrieves a list of community solution articles for a specific LeetCode problem, including metadata like author details, upvotes, and summary. Note that this tool does not return the actual content of solution articles, only their metadata.",
+            "Retrieves a list of community solution articles for a specific LeetCode problem, including only metadata like article slug. To view the full content of a solution article, use the 'leetcode_solution_article' tool with the slug returned by this tool.",
             {
                 questionSlug: z
                     .string()
                     .describe(
-                        "The URL slug/identifier of the problem to retrieve solution articles for (e.g., 'two-sum', 'add-two-numbers'). This is the same string that appears in the LeetCode China problem URL after '/problems/'"
+                        "The URL slug/identifier of the problem to retrieve solution articles for (e.g., 'two-sum', 'add-two-numbers'). This is the same string that appears in the LeetCode problem URL after '/problems/'"
                     ),
                 limit: z
                     .number()
@@ -184,7 +185,7 @@ export class SolutionToolRegistry extends ToolRegistry {
                     .default("DEFAULT")
                     .optional()
                     .describe(
-                        "Sorting criteria for the returned solution articles. 'DEFAULT' uses LeetCode China's default algorithm, 'MOST_UPVOTE' sorts by the number of upvotes (highest first), 'HOT' prioritizes trending articles with recent engagement, 'NEWEST_TO_OLDEST' sorts by publication date (newest first), and 'OLDEST_TO_NEWEST' sorts by publication date (oldest first)."
+                        "Sorting criteria for the returned solution articles. 'DEFAULT' uses the default algorithm, 'MOST_UPVOTE' sorts by the number of upvotes (highest first), 'HOT' prioritizes trending articles with recent engagement, 'NEWEST_TO_OLDEST' sorts by publication date (newest first), and 'OLDEST_TO_NEWEST' sorts by publication date (oldest first)."
                     ),
                 userInput: z
                     .string()
@@ -252,7 +253,7 @@ export class SolutionToolRegistry extends ToolRegistry {
 
         // Solution article detail tool (CN-specific)
         this.server.tool(
-            "leetcode_solution_article_detail",
+            "leetcode_solution_article",
             "Retrieves the complete content and metadata of a specific solution article, including the full article text, author information, and related navigation links",
             {
                 slug: z

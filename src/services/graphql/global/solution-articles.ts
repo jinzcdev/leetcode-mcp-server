@@ -33,52 +33,12 @@ query ugcArticleSolutionArticles(
     }
     edges {
       node {
-        uuid
         title
-        slug
-        summary
-        author {
-          realName
-          userAvatar
-          userSlug
-          userName
-          nameColor
-          certificationLevel
-          activeBadge {
-            icon
-            displayName
-          }
-        }
-        articleType
-        thumbnail
-        summary
-        createdAt
-        updatedAt
-        status
-        isLeetcode
-        canSee
-        canEdit
-        isMyFavorite
-        chargeType
-        myReactionType
         topicId
-        hitCount
-        hasVideoArticle
-        reactions {
-          count
-          reactionType
-        }
-        title
+        summary
         slug
-        tags {
-          name
-          slug
-          tagType
-        }
-        topic {
-          id
-          topLevelCommentCount
-        }
+        canSee
+        hasVideoArticle
       }
     }
   }

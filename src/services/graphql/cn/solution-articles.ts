@@ -22,59 +22,13 @@ query questionTopicsList(
     totalNum
     edges {
       node {
-        rewardEnabled
-        canEditReward
-        uuid
-        title
         slug
-        sunk
-        chargeType
-        status
-        identifier
-        canEdit
         canSee
-        reactionType
-        hasVideo
-        favoriteCount
-        upvoteCount
-        reactionsV2 {
-          count
-          reactionType
-        }
-        tags {
-          name
-          nameTranslated
-          slug
-          tagType
-        }
-        createdAt
-        thumbnail
-        author {
-          username
-          certificationLevel
-          profile {
-            userAvatar
-            userSlug
-            realName
-            reputation
-          }
-        }
-        summary
         topic {
           id
-          commentCount
-          viewCount
-          pinned
         }
-        byLeetcode
-        isMyFavorite
-        isMostPopular
-        isEditorsPick
-        hitCount
         videosInfo {
-          videoId
           coverUrl
-          duration
         }
       }
     }

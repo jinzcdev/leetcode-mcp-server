@@ -268,7 +268,7 @@ export class LeetCodeCNService implements LeetCodeBaseService {
         try {
             const variables: any = {
                 questionSlug,
-                first: options?.limit || 20,
+                first: options?.limit || 5,
                 skip: options?.skip || 0,
                 orderBy: options?.orderBy || "DEFAULT",
                 userInput: options?.userInput,
@@ -281,7 +281,37 @@ export class LeetCodeCNService implements LeetCodeBaseService {
                     variables
                 })
                 .then((res) => {
-                    return res.data?.questionSolutionArticles;
+                    const questionSolutionArticles =
+                        res.data?.questionSolutionArticles;
+                    if (!questionSolutionArticles) {
+                        return {
+                            totalNum: 0,
+                            hasNextPage: false,
+                            articles: []
+                        };
+                    }
+                    const data = {
+                        totalNum: questionSolutionArticles?.totalNum || 0,
+                        hasNextPage:
+                            questionSolutionArticles?.pageInfo?.hasNextPage ||
+                            false,
+                        articles:
+                            questionSolutionArticles?.edges
+                                ?.map((edge: any) => {
+                                    if (
+                                        edge?.node &&
+                                        edge.node.topic?.id &&
+                                        edge.node.slug
+                                    ) {
+                                        edge.node.articleUrl = `https://leetcode.cn/problems/${questionSlug}/solutions/${edge.node.topic.id}/${edge.node.slug}`;
+                                    }
+                                    return edge.node;
+                                })
+                                .filter((node: any) => node && node.canSee) ||
+                            []
+                    };
+
+                    return data;
                 });
         } catch (error) {
             console.error(

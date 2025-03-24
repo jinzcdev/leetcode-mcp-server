@@ -260,7 +260,7 @@ export class LeetCodeGlobalService implements LeetCodeBaseService {
         try {
             const variables: any = {
                 questionSlug,
-                first: options?.limit || 20,
+                first: options?.limit || 5,
                 skip: options?.skip || 0,
                 orderBy: options?.orderBy || "HOT",
                 userInput: options?.userInput,
@@ -272,8 +272,38 @@ export class LeetCodeGlobalService implements LeetCodeBaseService {
                     query: SOLUTION_ARTICLES_QUERY,
                     variables
                 })
-                .then((response) => {
-                    return response.data?.ugcArticleSolutionArticles;
+                .then((res) => {
+                    const ugcArticleSolutionArticles =
+                        res.data?.ugcArticleSolutionArticles;
+                    if (!ugcArticleSolutionArticles) {
+                        return {
+                            totalNum: 0,
+                            hasNextPage: false,
+                            articles: []
+                        };
+                    }
+                    const data = {
+                        totalNum: ugcArticleSolutionArticles?.totalNum || 0,
+                        hasNextPage:
+                            ugcArticleSolutionArticles?.pageInfo?.hasNextPage ||
+                            false,
+                        articles:
+                            ugcArticleSolutionArticles?.edges
+                                ?.map((edge: any) => {
+                                    if (
+                                        edge?.node &&
+                                        edge.node.topicId &&
+                                        edge.node.slug
+                                    ) {
+                                        edge.node.articleUrl = `https://leetcode.com/problems/${questionSlug}/solutions/${edge.node.topicId}/${edge.node.slug}`;
+                                    }
+                                    return edge.node;
+                                })
+                                .filter((node: any) => node && node.canSee) ||
+                            []
+                    };
+
+                    return data;
                 });
         } catch (error) {
             console.error(
