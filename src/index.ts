@@ -5,14 +5,14 @@ import minimist from "minimist";
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { registerProblemResources } from "./resources/problem-resources.js";
-import { registerSolutionResources } from "./resources/solution-resources.js";
-import { LeetCodeBaseService } from "./services/leetcode-base-service.js";
-import { LeetCodeServiceFactory } from "./services/leetcode-service-factory.js";
-import { registerContestTools } from "./tools/contest-tools.js";
-import { registerProblemTools } from "./tools/problem-tools.js";
-import { registerSolutionTools } from "./tools/solution-tools.js";
-import { registerUserTools } from "./tools/user-tools.js";
+import { LeetCodeBaseService } from "./leetcode/leetcode-base-service.js";
+import { LeetCodeServiceFactory } from "./leetcode/leetcode-service-factory.js";
+import { registerProblemResources } from "./mcp/resources/problem-resources.js";
+import { registerSolutionResources } from "./mcp/resources/solution-resources.js";
+import { registerContestTools } from "./mcp/tools/contest-tools.js";
+import { registerProblemTools } from "./mcp/tools/problem-tools.js";
+import { registerSolutionTools } from "./mcp/tools/solution-tools.js";
+import { registerUserTools } from "./mcp/tools/user-tools.js";
 
 /**
  * Parses and validates command line arguments for the LeetCode MCP Server.

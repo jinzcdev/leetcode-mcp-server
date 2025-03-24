@@ -1,6 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { RegistryBase } from "../common/registry-base.js";
-import { LeetCodeBaseService } from "../services/leetcode-base-service.js";
+import { RegistryBase } from "../../common/registry-base.js";
+import { LeetCodeBaseService } from "../../leetcode/leetcode-base-service.js";
 
 /**
  * Base registry class for LeetCode tools that provides site type detection and authentication status checks.

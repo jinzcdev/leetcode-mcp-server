@@ -6,8 +6,8 @@ import {
     PROBLEM_CATEGORIES,
     PROBLEM_TAGS,
     PROGRAMMING_LANGS
-} from "../constants.js";
-import { LeetCodeBaseService } from "../services/leetcode-base-service.js";
+} from "../../common/constants.js";
+import { LeetCodeBaseService } from "../../leetcode/leetcode-base-service.js";
 import { ResourceRegistry } from "./resource-registry.js";
 
 /**

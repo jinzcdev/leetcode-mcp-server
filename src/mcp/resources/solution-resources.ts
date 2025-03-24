@@ -2,7 +2,7 @@ import {
     McpServer,
     ResourceTemplate
 } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { LeetCodeBaseService } from "../services/leetcode-base-service.js";
+import { LeetCodeBaseService } from "../../leetcode/leetcode-base-service.js";
 import { ResourceRegistry } from "./resource-registry.js";
 
 /**

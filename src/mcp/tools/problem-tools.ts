@@ -1,7 +1,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { PROBLEM_CATEGORIES, PROBLEM_TAGS } from "../constants.js";
-import { LeetCodeBaseService } from "../services/leetcode-base-service.js";
+import { PROBLEM_CATEGORIES, PROBLEM_TAGS } from "../../common/constants.js";
+import { LeetCodeBaseService } from "../../leetcode/leetcode-base-service.js";
 import { ToolRegistry } from "./tool-registry.js";
 
 /**
