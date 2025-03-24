@@ -1,5 +1,9 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { LANG, PROBLEM_CATEGORIES, PROBLEM_TAGS } from "../constants.js";
+import {
+    PROBLEM_CATEGORIES,
+    PROBLEM_TAGS,
+    PROGRAMMING_LANGS
+} from "../constants.js";
 import { LeetCodeBaseService } from "../services/leetcode-base-service.js";
 
 /**
@@ -77,7 +81,7 @@ export function registerProblemResources(
                 contents: [
                     {
                         uri: uri.toString(),
-                        text: JSON.stringify(LANG),
+                        text: JSON.stringify(PROGRAMMING_LANGS),
                         mimeType: "application/json"
                     }
                 ]

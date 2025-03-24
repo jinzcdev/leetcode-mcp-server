@@ -1,4 +1,6 @@
 import { Credential, LeetCodeCN } from "leetcode-query";
+import { SOLUTION_ARTICLE_DETAIL_QUERY } from "./graphql/cn/solution-article-detail.js";
+import { SOLUTION_ARTICLES_QUERY } from "./graphql/cn/solution-articles.js";
 import { LeetCodeBaseService } from "./leetcode-base-service.js";
 
 /**
@@ -248,6 +250,71 @@ export class LeetCodeCNService implements LeetCodeBaseService {
             return await this.leetCodeApi.user_progress_questions(filters);
         } catch (error) {
             console.error("Error fetching user progress question list:", error);
+            throw error;
+        }
+    }
+
+    /**
+     * Retrieves a list of solution articles for a specific problem on LeetCode CN.
+     *
+     * @param questionSlug - The URL slug/identifier of the problem
+     * @param options - Optional parameters for filtering and sorting the solution articles
+     * @returns Promise resolving to the solution articles list data
+     */
+    async fetchQuestionSolutionArticles(
+        questionSlug: string,
+        options?: any
+    ): Promise<any> {
+        try {
+            const variables: any = {
+                questionSlug,
+                first: options?.limit || 20,
+                skip: options?.skip || 0,
+                orderBy: options?.orderBy || "DEFAULT",
+                userInput: options?.userInput,
+                tagSlugs: options?.tagSlugs ?? []
+            };
+
+            return await this.leetCodeApi
+                .graphql({
+                    query: SOLUTION_ARTICLES_QUERY,
+                    variables
+                })
+                .then((res) => {
+                    return res.data?.questionSolutionArticles;
+                });
+        } catch (error) {
+            console.error(
+                `Error fetching solution articles for ${questionSlug}:`,
+                error
+            );
+            throw error;
+        }
+    }
+
+    /**
+     * Retrieves detailed information about a specific solution article on LeetCode CN.
+     *
+     * @param slug - The slug of the solution article
+     * @returns Promise resolving to the solution article detail data
+     */
+    async fetchSolutionArticleDetail(slug: string): Promise<any> {
+        try {
+            return await this.leetCodeApi
+                .graphql({
+                    query: SOLUTION_ARTICLE_DETAIL_QUERY,
+                    variables: {
+                        slug
+                    }
+                })
+                .then((res) => {
+                    return res.data?.solutionArticle;
+                });
+        } catch (error) {
+            console.error(
+                `Error fetching solution article detail for slug ${slug}:`,
+                error
+            );
             throw error;
         }
     }

@@ -1,6 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { LANG } from "../constants.js";
+import { PROGRAMMING_LANGS } from "../constants.js";
 import { LeetCodeBaseService } from "../services/leetcode-base-service.js";
 import { ToolRegistry } from "./tool-registry.js";
 
@@ -428,7 +428,7 @@ export class UserToolRegistry extends ToolRegistry {
                         "Optional problem identifier (slug) to filter submissions for a specific problem (e.g., 'two-sum'); if omitted, returns submissions across all problems"
                     ),
                 lang: z
-                    .enum(LANG as [string])
+                    .enum(PROGRAMMING_LANGS as [string])
                     .optional()
                     .describe(
                         "Programming language filter to show only submissions in a specific language (e.g., 'python3', 'java', 'cpp')"

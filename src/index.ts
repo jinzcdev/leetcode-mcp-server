@@ -10,6 +10,7 @@ import { LeetCodeBaseService } from "./services/leetcode-base-service.js";
 import { LeetCodeServiceFactory } from "./services/leetcode-service-factory.js";
 import { registerContestTools } from "./tools/contest-tools.js";
 import { registerProblemTools } from "./tools/problem-tools.js";
+import { registerSolutionTools } from "./tools/solution-tools.js";
 import { registerUserTools } from "./tools/user-tools.js";
 
 /**
@@ -99,6 +100,7 @@ async function main() {
     registerProblemTools(server, leetcodeService);
     registerUserTools(server, leetcodeService);
     registerContestTools(server, leetcodeService);
+    registerSolutionTools(server, leetcodeService);
     registerProblemResources(server, leetcodeService);
 
     const transport = new StdioServerTransport();

@@ -148,4 +148,24 @@ export interface LeetCodeBaseService {
      * @returns True for LeetCode CN, false for LeetCode Global
      */
     isCN(): boolean;
+
+    /**
+     * Retrieves a list of solution articles for a specific problem.
+     *
+     * @param questionSlug - The URL slug/identifier of the problem
+     * @param options - Optional parameters for filtering and sorting the solution articles
+     * @returns Promise resolving to the solution articles list data
+     */
+    fetchQuestionSolutionArticles(
+        questionSlug: string,
+        options?: any
+    ): Promise<any>;
+
+    /**
+     * Retrieves detailed information about a specific solution article.
+     *
+     * @param identifier - The identifier of the solution article (topicId for Global, slug for CN)
+     * @returns Promise resolving to the solution article detail data
+     */
+    fetchSolutionArticleDetail(identifier: string): Promise<any>;
 }

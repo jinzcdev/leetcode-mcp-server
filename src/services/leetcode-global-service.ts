@@ -1,4 +1,6 @@
 import { Credential, LeetCode } from "leetcode-query";
+import { SOLUTION_ARTICLE_DETAIL_QUERY } from "./graphql/global/solution-article-detail.js";
+import { SOLUTION_ARTICLES_QUERY } from "./graphql/global/solution-articles.js";
 import { LeetCodeBaseService } from "./leetcode-base-service.js";
 
 /**
@@ -240,6 +242,71 @@ export class LeetCodeGlobalService implements LeetCodeBaseService {
             return await this.leetCodeApi.user_progress_questions(filters);
         } catch (error) {
             console.error("Error fetching user progress question list:", error);
+            throw error;
+        }
+    }
+
+    /**
+     * Retrieves a list of solution articles for a specific problem.
+     *
+     * @param questionSlug - The URL slug/identifier of the problem
+     * @param options - Optional parameters for filtering and sorting the solution articles
+     * @returns Promise resolving to the solution articles list data
+     */
+    async fetchQuestionSolutionArticles(
+        questionSlug: string,
+        options?: any
+    ): Promise<any> {
+        try {
+            const variables: any = {
+                questionSlug,
+                first: options?.limit || 20,
+                skip: options?.skip || 0,
+                orderBy: options?.orderBy || "HOT",
+                userInput: options?.userInput,
+                tagSlugs: options?.tagSlugs ?? []
+            };
+
+            return await this.leetCodeApi
+                .graphql({
+                    query: SOLUTION_ARTICLES_QUERY,
+                    variables
+                })
+                .then((response) => {
+                    return response.data?.ugcArticleSolutionArticles;
+                });
+        } catch (error) {
+            console.error(
+                `Error fetching solution articles for ${questionSlug}:`,
+                error
+            );
+            throw error;
+        }
+    }
+
+    /**
+     * Retrieves detailed information about a specific solution article on LeetCode Global.
+     *
+     * @param topicId - The topic ID of the solution article
+     * @returns Promise resolving to the solution article detail data
+     */
+    async fetchSolutionArticleDetail(topicId: string): Promise<any> {
+        try {
+            return await this.leetCodeApi
+                .graphql({
+                    query: SOLUTION_ARTICLE_DETAIL_QUERY,
+                    variables: {
+                        topicId
+                    }
+                })
+                .then((response) => {
+                    return response.data?.ugcArticleSolutionArticle;
+                });
+        } catch (error) {
+            console.error(
+                `Error fetching solution article detail for topic ${topicId}:`,
+                error
+            );
             throw error;
         }
     }

@@ -2,7 +2,7 @@
  * Programming languages officially supported by LeetCode for problem submissions.
  * These language identifiers are used when filtering submissions or submitting solutions.
  */
-export const LANG: string[] = [
+export const PROGRAMMING_LANGS: string[] = [
     "cpp",
     "java",
     "python",
