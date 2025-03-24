@@ -33,7 +33,7 @@ export class ProblemToolRegistry extends ToolRegistry {
 
         // Problem details tool
         this.server.tool(
-            "leetcode_problem",
+            "leetcode_problem_detail",
             "Retrieves comprehensive details about a specific LeetCode problem, including its description, examples, constraints, and related information",
             {
                 titleSlug: z

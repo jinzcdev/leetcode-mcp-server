@@ -8,7 +8,7 @@ import { ToolRegistry } from "./tool-registry.js";
  * This class manages tools for accessing contest rankings, history, and user performance in contests.
  */
 export class ContestToolRegistry extends ToolRegistry {
-    protected registerCommonTools(): void {
+    protected registerCommon(): void {
         // User contest ranking tool
         this.server.tool(
             "leetcode_user_contest_ranking",
@@ -61,16 +61,6 @@ export class ContestToolRegistry extends ToolRegistry {
             }
         );
     }
-
-    protected registerGlobalTools(): void {}
-
-    protected registerChinaTools(): void {}
-
-    protected registerAuthenticatedCommonTools(): void {}
-
-    protected registerAuthenticatedGlobalTools(): void {}
-
-    protected registerAuthenticatedChinaTools(): void {}
 }
 
 /**

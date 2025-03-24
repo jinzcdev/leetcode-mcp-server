@@ -8,15 +8,11 @@ import { ToolRegistry } from "./tool-registry.js";
  * This class manages tools for accessing solution articles, filtering solutions, and reading solution details.
  */
 export class SolutionToolRegistry extends ToolRegistry {
-    protected registerCommonTools(): void {
-        // No common tools that work identically on both platforms
-    }
-
-    protected registerGlobalTools(): void {
+    protected registerGlobal(): void {
         // Solution articles listing tool (Global-specific)
         this.server.tool(
             "leetcode_solution_article_list",
-            "Retrieves a list of community solution articles for a specific LeetCode problem on the Global platform, including metadata like author details, reactions, and summary",
+            "Retrieves a list of community solution articles for a specific LeetCode problem on the Global platform, including metadata like author details, reactions, and summary. Note that this tool does not return the actual content of solution articles, only their metadata.",
             {
                 questionSlug: z
                     .string()
@@ -152,11 +148,11 @@ export class SolutionToolRegistry extends ToolRegistry {
         );
     }
 
-    protected registerChinaTools(): void {
+    protected registerChina(): void {
         // Solution articles listing tool (CN-specific)
         this.server.tool(
             "leetcode_solution_article_list",
-            "Retrieves a list of community solution articles for a specific LeetCode problem on the China platform, including metadata like author details, upvotes, and summary",
+            "Retrieves a list of community solution articles for a specific LeetCode problem, including metadata like author details, upvotes, and summary. Note that this tool does not return the actual content of solution articles, only their metadata.",
             {
                 questionSlug: z
                     .string()
@@ -298,18 +294,6 @@ export class SolutionToolRegistry extends ToolRegistry {
                 }
             }
         );
-    }
-
-    protected registerAuthenticatedCommonTools(): void {
-        // No authenticated common solution tools at this time
-    }
-
-    protected registerAuthenticatedGlobalTools(): void {
-        // No authenticated global-specific solution tools at this time
-    }
-
-    protected registerAuthenticatedChinaTools(): void {
-        // No authenticated CN-specific solution tools at this time
     }
 }
 

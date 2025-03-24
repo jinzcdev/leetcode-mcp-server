@@ -9,7 +9,7 @@ import { ToolRegistry } from "./tool-registry.js";
  * This class manages tools for accessing user profiles, submissions, and progress data.
  */
 export class UserToolRegistry extends ToolRegistry {
-    protected registerCommonTools(): void {
+    protected registerCommon(): void {
         // User profile tool
         this.server.tool(
             "leetcode_user_profile",
@@ -39,7 +39,7 @@ export class UserToolRegistry extends ToolRegistry {
         );
     }
 
-    protected registerGlobalTools(): void {
+    protected registerGlobal(): void {
         // Recent submissions tool (Global-specific)
         this.server.tool(
             "leetcode_recent_submissions",
@@ -143,7 +143,7 @@ export class UserToolRegistry extends ToolRegistry {
         );
     }
 
-    protected registerChinaTools(): void {
+    protected registerChina(): void {
         // User recent AC submissions tool (CN-specific)
         this.server.tool(
             "leetcode_user_recent_ac_submissions",
@@ -199,7 +199,7 @@ export class UserToolRegistry extends ToolRegistry {
     /**
      * Registers common tools that require authentication and are available on both Global and CN platforms.
      */
-    protected registerAuthenticatedCommonTools(): void {
+    protected registerAuthenticatedCommon(): void {
         // User status tool (requires authentication)
         this.server.tool(
             "leetcode_user_status",
@@ -343,7 +343,7 @@ export class UserToolRegistry extends ToolRegistry {
     /**
      * Registers tools specific to the Global LeetCode site that require authentication.
      */
-    protected registerAuthenticatedGlobalTools(): void {
+    protected registerAuthenticatedGlobal(): void {
         // Global user submissions tool (requires authentication)
         this.server.tool(
             "leetcode_user_all_submissions",
@@ -405,7 +405,7 @@ export class UserToolRegistry extends ToolRegistry {
     /**
      * Registers tools specific to the China LeetCode site that require authentication.
      */
-    protected registerAuthenticatedChinaTools(): void {
+    protected registerAuthenticatedChina(): void {
         // China user submissions tool (requires authentication, enhanced version with more parameters)
         this.server.tool(
             "leetcode_user_all_submissions",

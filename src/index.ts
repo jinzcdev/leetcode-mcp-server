@@ -6,6 +6,7 @@ import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { registerProblemResources } from "./resources/problem-resources.js";
+import { registerSolutionResources } from "./resources/solution-resources.js";
 import { LeetCodeBaseService } from "./services/leetcode-base-service.js";
 import { LeetCodeServiceFactory } from "./services/leetcode-service-factory.js";
 import { registerContestTools } from "./tools/contest-tools.js";
@@ -101,7 +102,9 @@ async function main() {
     registerUserTools(server, leetcodeService);
     registerContestTools(server, leetcodeService);
     registerSolutionTools(server, leetcodeService);
+
     registerProblemResources(server, leetcodeService);
+    registerSolutionResources(server, leetcodeService);
 
     const transport = new StdioServerTransport();
     await server.connect(transport);

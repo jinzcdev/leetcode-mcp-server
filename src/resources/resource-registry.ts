@@ -3,15 +3,15 @@ import { RegistryBase } from "../common/registry-base.js";
 import { LeetCodeBaseService } from "../services/leetcode-base-service.js";
 
 /**
- * Base registry class for LeetCode tools that provides site type detection and authentication status checks.
- * This abstract class defines the framework for registering different categories of tools based on
+ * Base registry class for LeetCode resources that provides site type detection and authentication status checks.
+ * This abstract class defines the framework for registering different categories of resources based on
  * site version (Global or CN) and authentication requirements.
  */
-export abstract class ToolRegistry extends RegistryBase {
+export abstract class ResourceRegistry extends RegistryBase {
     /**
-     * Creates a new tool registry instance.
+     * Creates a new resource registry instance.
      *
-     * @param server - The MCP server instance to register tools with
+     * @param server - The MCP server instance to register resources with
      * @param leetcodeService - The LeetCode service implementation to use for API calls
      */
     constructor(
@@ -22,10 +22,9 @@ export abstract class ToolRegistry extends RegistryBase {
     }
 
     /**
-     * Registers all applicable tools based on site version and authentication status.
-     * This method follows a specific registration sequence to ensure proper tool organization.
+     * Registers all applicable resources based on site version and authentication status.
      */
-    public registerTools(): void {
+    public registerResources(): void {
         this.register();
     }
 }
