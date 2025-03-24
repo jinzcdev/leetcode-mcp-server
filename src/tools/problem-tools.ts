@@ -9,7 +9,7 @@ import { ToolRegistry } from "./tool-registry.js";
  * This class manages tools for accessing problem details, searching problems, and daily challenges.
  */
 export class ProblemToolRegistry extends ToolRegistry {
-    protected registerCommonTools(): void {
+    protected registerCommon(): void {
         // Daily challenge tool
         this.server.tool(
             "leetcode_daily_challenge",
@@ -115,16 +115,6 @@ export class ProblemToolRegistry extends ToolRegistry {
             }
         );
     }
-
-    protected registerGlobalTools(): void {}
-
-    protected registerChinaTools(): void {}
-
-    protected registerAuthenticatedCommonTools(): void {}
-
-    protected registerAuthenticatedGlobalTools(): void {}
-
-    protected registerAuthenticatedChinaTools(): void {}
 }
 
 /**
