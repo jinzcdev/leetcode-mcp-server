@@ -7,7 +7,7 @@ export default {
     singleQuote: false,
     overrides: [
         {
-            files: "**/*.md",
+            files: ["**/*.md", "**/*.yml"],
             options: {
                 tabWidth: 2
             }
