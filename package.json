@@ -1,7 +1,7 @@
 {
     "name": "@jinzcdev/mcp-server-leetcode",
     "description": "MCP Server for LeetCode API (supports leetcode.com and leetcode.cn)",
-    "version": "0.1.0",
+    "version": "1.0.0",
     "author": "jinzcdev",
     "main": "./build/index.js",
     "keywords": [
