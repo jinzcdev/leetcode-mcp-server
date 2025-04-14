@@ -1,5 +1,5 @@
 {
-    "name": "@jinzcdev/mcp-server-leetcode",
+    "name": "@jinzcdev/leetcode-mcp-server",
     "description": "MCP Server for LeetCode API (supports leetcode.com and leetcode.cn)",
     "version": "1.0.0",
     "author": "jinzcdev",
@@ -21,7 +21,7 @@
         "prepare": "husky"
     },
     "bin": {
-        "mcp-server-leetcode": "./build/index.js"
+        "leetcode-mcp-server": "build/index.js"
     },
     "type": "module",
     "files": [
@@ -30,7 +30,7 @@
     "license": "MIT",
     "repository": {
         "type": "git",
-        "url": "https://github.com/jinzcdev/mcp-server-leetcode.git"
+        "url": "git+https://github.com/jinzcdev/leetcode-mcp-server.git"
     },
     "lint-staged": {
         "*.{js,ts}": [

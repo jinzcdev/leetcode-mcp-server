@@ -1,7 +1,8 @@
 # LeetCode MCP Server
 
-![stars](https://img.shields.io/github/stars/jinzcdev/leetcode-mcp-server)
-![GitHub license](https://img.shields.io/github/license/jinzcdev/leetcode-mcp-server.svg)
+[![NPM Version](https://img.shields.io/npm/v/@jinzcdev/leetcode-mcp-server.svg)](https://www.npmjs.com/package/@jinzcdev/leetcode-mcp-server)
+[![GitHub License](https://img.shields.io/github/license/jinzcdev/leetcode-mcp-server.svg)](https://img.shields.io/github/license/jinzcdev/leetcode-mcp-server.svg)
+[![Stars](https://img.shields.io/github/stars/jinzcdev/leetcode-mcp-server)](https://github.com/jinzcdev/leetcode-mcp-server)
 
 The LeetCode MCP Server is a [Model Context Protocol (MCP)](https://modelcontextprotocol.io/introduction) server that provides seamless integration with LeetCode APIs, enabling advanced automation and intelligent interaction with LeetCode's programming problems, contests, solutions, and user data.
 
@@ -22,20 +23,33 @@ The LeetCode MCP Server is a [Model Context Protocol (MCP)](https://modelcontext
 
 ```bash
 # Install from npm
-npm install @jinzcdev/mcp-server-leetcode -g
+npm install @jinzcdev/leetcode-mcp-server -g
 
-# Run with China site configuration
-@jinzcdev/mcp-server-leetcode --site cn
+# Or run with Global site configuration
+npx -y @jinzcdev/leetcode-mcp-server --site global
 
 # Run with authentication (for accessing private data)
-@jinzcdev/mcp-server-leetcode --site global --session <YOUR_LEETCODE_SESSION_COOKIE>
+npx -y @jinzcdev/leetcode-mcp-server --site global --session <YOUR_LEETCODE_SESSION_COOKIE>
+```
+
+Alternatively, you can clone the repository and run it locally:
+
+```bash
+# Clone the repository
+git clone https://github.com/jinzcdev/leetcode-mcp-server.git
+
+# Navigate to the project directory
+cd leetcode-mcp-server
+
+# Build and run the server
+npm run build && node build/index.js --site global
 ```
 
 ## Usage
 
 ### Visual Studio Code Integration
 
-Add the following JSON configuration to your User Settings (JSON) file Code. Access this by pressing `Ctrl + Shift + P` and searching for `Preferences: Open User Settings (JSON)`.
+Add the following JSON configuration to your User Settings (JSON) file Code. Access this by pressing `Ctrl/Cmd + Shift + P` and searching for `Preferences: Open User Settings (JSON)`.
 
 ```json
 {
@@ -43,8 +57,10 @@ Add the following JSON configuration to your User Settings (JSON) file Code. Acc
     "servers": {
       "leetcode": {
         "type": "stdio",
-        "command": "mcp-server-leetcode",
+        "command": "npx",
         "args": [
+          "-y",
+          "@jinzcdev/leetcode-mcp-server",
           "--site",
           "global",
           "--session",
@@ -68,7 +84,7 @@ The server supports the following environment variables:
 **Priority Note**:  
 Command-line arguments take precedence over environment variables when both are specified. For example:
 
-- If `LEETCODE_SITE=cn` is set but you run `mcp-server-leetcode --site global`, the server will use `global`.
+- If `LEETCODE_SITE=cn` is set but you run `leetcode-mcp-server --site global`, the server will use `global`.
 - If `LEETCODE_SESSION` exists but you provide `--session "new_cookie"`, the command-line session value will be used.
 
 ## Tools

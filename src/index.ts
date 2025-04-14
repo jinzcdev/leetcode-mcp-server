@@ -33,7 +33,7 @@ function parseArgs() {
     if (args.help) {
         console.log(`LeetCode MCP Server - Model Context Protocol server for LeetCode
 
-  Usage: mcp-server-leetcode [options]
+  Usage: leetcode-mcp-server [options]
 
   Options:
     --site, -s <site>          LeetCode API site: 'global' (leetcode.com) or 'cn' (leetcode.cn), default is 'global'
