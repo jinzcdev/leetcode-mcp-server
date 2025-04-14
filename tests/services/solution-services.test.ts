@@ -1,7 +1,7 @@
 import { Credential, LeetCode, LeetCodeCN } from "leetcode-query";
 import { describe, expect, it } from "vitest";
-import { LeetCodeCNService } from "../../src/services/leetcode-cn-service";
-import { LeetCodeGlobalService } from "../../src/services/leetcode-global-service";
+import { LeetCodeCNService } from "../../src/leetcode/leetcode-cn-service.js";
+import { LeetCodeGlobalService } from "../../src/leetcode/leetcode-global-service.js";
 
 describe("LeetCode Solution Services", () => {
     describe("LeetCodeGlobalService", () => {
@@ -20,7 +20,7 @@ describe("LeetCode Solution Services", () => {
 
                 expect(result).toBeDefined();
                 expect(result.totalNum).toBeTypeOf("number");
-                expect(Array.isArray(result.edges)).toBe(true);
+                expect(Array.isArray(result.articles)).toBe(true);
             }, 30000);
 
             it("should fetch solution articles with custom options", async () => {
@@ -35,9 +35,9 @@ describe("LeetCode Solution Services", () => {
 
                 expect(result).toBeDefined();
                 expect(result.totalNum).toBeTypeOf("number");
-                expect(Array.isArray(result.edges)).toBe(true);
+                expect(Array.isArray(result.articles)).toBe(true);
 
-                expect(result.edges.length).toBeLessThanOrEqual(5);
+                expect(result.articles.length).toBeLessThanOrEqual(5);
             }, 30000);
 
             it("should handle errors properly for invalid slugs", async () => {
@@ -108,7 +108,7 @@ describe("LeetCode Solution Services", () => {
 
                 expect(result).toBeDefined();
                 expect(result.totalNum).toBeTypeOf("number");
-                expect(Array.isArray(result.edges)).toBe(true);
+                expect(Array.isArray(result.articles)).toBe(true);
 
                 console.log(
                     `Found ${result.totalNum} solutions for ${questionSlug} on CN`
@@ -127,9 +127,9 @@ describe("LeetCode Solution Services", () => {
 
                 expect(result).toBeDefined();
                 expect(result.totalNum).toBeTypeOf("number");
-                expect(Array.isArray(result.edges)).toBe(true);
+                expect(Array.isArray(result.articles)).toBe(true);
 
-                expect(result.edges.length).toBeLessThanOrEqual(5);
+                expect(result.articles.length).toBeLessThanOrEqual(5);
             }, 30000);
 
             it("should handle errors properly for invalid slugs", async () => {

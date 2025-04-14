@@ -22,16 +22,13 @@ The LeetCode MCP Server is a [Model Context Protocol (MCP)](https://modelcontext
 
 ```bash
 # Install from npm
-npm install mcp-server-leetcode -g
-
-# Run the server with default settings (Global LeetCode site)
-mcp-server-leetcode
+npm install @jinzcdev/mcp-server-leetcode -g
 
 # Run with China site configuration
-mcp-server-leetcode --site cn
+@jinzcdev/mcp-server-leetcode --site cn
 
 # Run with authentication (for accessing private data)
-mcp-server-leetcode --site global --session <YOUR_LEETCODE_SESSION_COOKIE>
+@jinzcdev/mcp-server-leetcode --site global --session <YOUR_LEETCODE_SESSION_COOKIE>
 ```
 
 ## Usage
