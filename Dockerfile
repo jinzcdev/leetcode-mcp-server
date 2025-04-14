@@ -16,7 +16,12 @@ COPY . .
 # Build the application
 RUN npm run build
 
+ENV LEETCODE_SITE=global \
+    LEETCODE_SESSION=
+
 # Expose any port if needed (MCP uses stdio, so not required for now)
 
 # Set the default command
-CMD [ "node", "build/index.js", "--site", "global" ]
+CMD node build/index.js \
+    --site ${LEETCODE_SITE:-global} \
+    --session ${LEETCODE_SESSION}
