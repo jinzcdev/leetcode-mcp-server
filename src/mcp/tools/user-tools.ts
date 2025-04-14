@@ -278,11 +278,13 @@ export class UserToolRegistry extends ToolRegistry {
             {
                 offset: z
                     .number()
+                    .default(0)
                     .describe(
                         "The number of questions to skip for pagination purposes"
                     ),
                 limit: z
                     .number()
+                    .default(200)
                     .describe(
                         "The maximum number of questions to return in a single request"
                     ),
