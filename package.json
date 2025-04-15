@@ -49,6 +49,7 @@
         "@eslint/js": "^9.24.0",
         "@types/minimist": "^1.2.5",
         "@types/node": "^22.14.0",
+        "esbuild": "^0.25.2",
         "eslint": "^9.24.0",
         "eslint-config-prettier": "^10.1.2",
         "eslint-plugin-prettier": "^5.2.6",
@@ -60,6 +61,9 @@
         "tsc-watch": "6.2.1",
         "typescript": "^5.8.3",
         "typescript-eslint": "^8.29.1",
-        "vitest": "^1.6.1"
+        "vitest": "^3.1.1"
+    },
+    "optionalDependencies": {
+        "@rollup/rollup-linux-x64-gnu": "^4.40.0"
     }
 }
