@@ -7,6 +7,10 @@
 
 The LeetCode MCP Server is a [Model Context Protocol (MCP)](https://modelcontextprotocol.io/introduction) server that provides seamless integration with LeetCode APIs, enabling advanced automation and intelligent interaction with LeetCode's programming problems, contests, solutions, and user data.
 
+<a href="https://glama.ai/mcp/servers/@jinzcdev/leetcode-mcp-server">
+  <img width="380" height="200" src="https://glama.ai/mcp/servers/@jinzcdev/leetcode-mcp-server/badge" alt="LeetCode Server MCP server" />
+</a>
+
 ## Features
 
 - **Multi-site Support**: Supports both leetcode.com and leetcode.cn platforms
