@@ -350,6 +350,40 @@ export class LeetCodeGlobalService implements LeetCodeBaseService {
         }
     }
 
+    /**
+     * Note feature is not supported in LeetCode Global.
+     * This method is implemented to satisfy the interface but will always throw an error.
+     *
+     * @param options - Query parameters (not used)
+     * @throws Error indicating the feature is not supported on Global platform
+     */
+    async fetchUserNotes(options: {
+        aggregateType: string;
+        keyword?: string;
+        orderBy?: string;
+        limit?: number;
+        skip?: number;
+    }): Promise<any> {
+        throw new Error("Notes feature is not supported in LeetCode Global");
+    }
+
+    /**
+     * Note feature is not supported in LeetCode Global.
+     * This method is implemented to satisfy the interface but will always throw an error.
+     *
+     * @param questionId - The question ID (not used)
+     * @param limit - Maximum number of notes (not used)
+     * @param skip - Pagination offset (not used)
+     * @throws Error indicating the feature is not supported on Global platform
+     */
+    async fetchNotesByQuestionId(
+        questionId: string,
+        limit?: number,
+        skip?: number
+    ): Promise<any> {
+        throw new Error("Notes feature is not supported in LeetCode Global");
+    }
+
     isAuthenticated(): boolean {
         return (
             !!this.credential &&

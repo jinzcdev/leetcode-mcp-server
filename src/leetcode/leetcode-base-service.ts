@@ -170,4 +170,41 @@ export interface LeetCodeBaseService {
      * @returns Promise resolving to the solution article detail data
      */
     fetchSolutionArticleDetail(identifier: string): Promise<any>;
+
+    /**
+     * Retrieves user notes from LeetCode with filtering and pagination options.
+     * Note: This feature is only available on LeetCode CN.
+     *
+     * @param options - Query parameters for filtering notes
+     * @param options.aggregateType - Type of notes to aggregate (e.g., "QUESTION_NOTE")
+     * @param options.keyword - Optional search term to filter notes
+     * @param options.orderBy - Optional sorting criteria for notes
+     * @param options.limit - Maximum number of notes to return
+     * @param options.skip - Number of notes to skip (for pagination)
+     * @returns Promise resolving to the filtered notes data
+     * @throws Error if not implemented or feature not supported
+     */
+    fetchUserNotes(options: {
+        aggregateType: string;
+        keyword?: string;
+        orderBy?: string;
+        limit?: number;
+        skip?: number;
+    }): Promise<any>;
+
+    /**
+     * Retrieves user notes for a specific question ID.
+     * Note: This feature is only available on LeetCode CN.
+     *
+     * @param questionId - The question ID to fetch notes for
+     * @param limit - Maximum number of notes to return
+     * @param skip - Number of notes to skip (for pagination)
+     * @returns Promise resolving to the notes data for the specified question
+     * @throws Error if not implemented or feature not supported
+     */
+    fetchNotesByQuestionId(
+        questionId: string,
+        limit?: number,
+        skip?: number
+    ): Promise<any>;
 }

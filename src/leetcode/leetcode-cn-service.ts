@@ -1,4 +1,8 @@
 import { Credential, LeetCodeCN } from "leetcode-query";
+import {
+    NOTE_AGGREGATE_QUERY,
+    NOTE_BY_QUESTION_ID_QUERY
+} from "./graphql/cn/note-queries.js";
 import { SEARCH_PROBLEMS_QUERY } from "./graphql/cn/search-problems.js";
 import { SOLUTION_ARTICLE_DETAIL_QUERY } from "./graphql/cn/solution-article-detail.js";
 import { SOLUTION_ARTICLES_QUERY } from "./graphql/cn/solution-articles.js";
@@ -352,6 +356,107 @@ export class LeetCodeCNService implements LeetCodeBaseService {
         } catch (error) {
             console.error(
                 `Error fetching solution article detail for slug ${slug}:`,
+                error
+            );
+            throw error;
+        }
+    }
+
+    /**
+     * Retrieves user notes from LeetCode CN with filtering and pagination options.
+     * Available only on LeetCode CN platform.
+     *
+     * @param options - Query parameters for filtering notes
+     * @param options.aggregateType - Type of notes to aggregate (e.g., "QUESTION_NOTE")
+     * @param options.keyword - Optional search term to filter notes
+     * @param options.orderBy - Optional sorting criteria for notes
+     * @param options.limit - Maximum number of notes to return
+     * @param options.skip - Number of notes to skip (for pagination)
+     * @returns Promise resolving to the filtered notes data
+     */
+    async fetchUserNotes(options: {
+        aggregateType: string;
+        keyword?: string;
+        orderBy?: string;
+        limit?: number;
+        skip?: number;
+    }): Promise<any> {
+        if (!this.isAuthenticated()) {
+            throw new Error("Authentication required to fetch user notes");
+        }
+
+        try {
+            const variables = {
+                aggregateType: options.aggregateType,
+                keyword: options.keyword,
+                orderBy: options.orderBy || "DESCENDING",
+                limit: options.limit || 20,
+                skip: options.skip || 0
+            };
+
+            return await this.leetCodeApi
+                .graphql({
+                    query: NOTE_AGGREGATE_QUERY,
+                    variables
+                })
+                .then((response) => {
+                    return (
+                        response.data?.noteAggregateNote || {
+                            count: 0,
+                            userNotes: []
+                        }
+                    );
+                });
+        } catch (error) {
+            console.error(`Error fetching user notes:`, error);
+            throw error;
+        }
+    }
+
+    /**
+     * Retrieves user notes for a specific question ID.
+     * Available only on LeetCode CN platform.
+     *
+     * @param questionId - The question ID to fetch notes for
+     * @param limit - Maximum number of notes to return (default: 20)
+     * @param skip - Number of notes to skip (default: 0)
+     * @returns Promise resolving to the notes data for the specified question
+     */
+    async fetchNotesByQuestionId(
+        questionId: string,
+        limit: number = 20,
+        skip: number = 0
+    ): Promise<any> {
+        if (!this.isAuthenticated()) {
+            throw new Error(
+                "Authentication required to fetch notes by question ID"
+            );
+        }
+
+        try {
+            const variables = {
+                noteType: "COMMON_QUESTION",
+                questionId: questionId,
+                limit,
+                skip
+            };
+
+            return await this.leetCodeApi
+                .graphql({
+                    query: NOTE_BY_QUESTION_ID_QUERY,
+                    variables
+                })
+                .then((response) => {
+                    return (
+                        response.data?.noteOneTargetCommonNote || {
+                            count: 0,
+                            userNotes: []
+                        }
+                    );
+                });
+        } catch (error) {
+            console.error(
+                `Error fetching notes for question ${questionId}:`,
                 error
             );
             throw error;
