@@ -23,9 +23,9 @@ export class NoteToolRegistry extends ToolRegistry {
                 limit: z
                     .number()
                     .optional()
-                    .default(20)
+                    .default(10)
                     .describe(
-                        "Maximum number of notes to return per request (defaults to 20)"
+                        "Maximum number of notes to return per request (defaults to 10)"
                     ),
                 skip: z
                     .number()
@@ -100,9 +100,9 @@ export class NoteToolRegistry extends ToolRegistry {
                 limit: z
                     .number()
                     .optional()
-                    .default(20)
+                    .default(10)
                     .describe(
-                        "Maximum number of notes to return per request (defaults to 20)"
+                        "Maximum number of notes to return per request (defaults to 10)"
                     ),
                 skip: z
                     .number()
