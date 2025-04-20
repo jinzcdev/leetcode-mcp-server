@@ -1,4 +1,5 @@
 import { Credential, LeetCode } from "leetcode-query";
+import logger from "../utils/logger.js";
 import { SEARCH_PROBLEMS_QUERY } from "./graphql/global/search-problems.js";
 import { SOLUTION_ARTICLE_DETAIL_QUERY } from "./graphql/global/solution-article-detail.js";
 import { SOLUTION_ARTICLES_QUERY } from "./graphql/global/solution-articles.js";
@@ -24,27 +25,14 @@ export class LeetCodeGlobalService implements LeetCodeBaseService {
                 "Authentication required to fetch user submission detail"
             );
         }
-        try {
-            return await this.leetCodeApi.submission(id);
-        } catch (error) {
-            console.error(
-                `Error fetching submission detail for id ${id}:`,
-                error
-            );
-            throw error;
-        }
+        return await this.leetCodeApi.submission(id);
     }
 
     async fetchUserStatus(): Promise<any> {
         if (!this.isAuthenticated()) {
             throw new Error("Authentication required to fetch user status");
         }
-        try {
-            return await this.leetCodeApi.whoami();
-        } catch (error) {
-            console.error(`Error fetching user status:`, error);
-            throw error;
-        }
+        return await this.leetCodeApi.whoami();
     }
 
     async fetchUserAllSubmissions(options: {
@@ -60,17 +48,12 @@ export class LeetCodeGlobalService implements LeetCodeBaseService {
                 "Authentication required to fetch user submissions"
             );
         }
-        try {
-            const submissions = await this.leetCodeApi.submissions({
-                offset: options.offset ?? 0,
-                limit: options.limit ?? 20,
-                slug: options.questionSlug
-            });
-            return { submissions };
-        } catch (error) {
-            console.error(`Error fetching user submissions:`, error);
-            throw error;
-        }
+        const submissions = await this.leetCodeApi.submissions({
+            offset: options.offset ?? 0,
+            limit: options.limit ?? 20,
+            slug: options.questionSlug
+        });
+        return { submissions };
     }
 
     /**
@@ -83,15 +66,7 @@ export class LeetCodeGlobalService implements LeetCodeBaseService {
         username: string,
         limit?: number
     ): Promise<any> {
-        try {
-            return await this.leetCodeApi.recent_submissions(username, limit);
-        } catch (error) {
-            console.error(
-                `Error fetching recent submissions for ${username}:`,
-                error
-            );
-            throw error;
-        }
+        return await this.leetCodeApi.recent_submissions(username, limit);
     }
 
     /**
@@ -104,143 +79,100 @@ export class LeetCodeGlobalService implements LeetCodeBaseService {
         username: string,
         limit?: number
     ): Promise<any> {
-        try {
-            return await this.leetCodeApi.graphql({
-                query: `
-                        query ($username: String!, $limit: Int) {
-                            recentAcSubmissionList(username: $username, limit: $limit) {
-                                id
-                                title
-                                titleSlug
-                                time
-                                timestamp
-                                statusDisplay
-                                lang
-                            }
+        return await this.leetCodeApi.graphql({
+            query: `
+                    query ($username: String!, $limit: Int) {
+                        recentAcSubmissionList(username: $username, limit: $limit) {
+                            id
+                            title
+                            titleSlug
+                            time
+                            timestamp
+                            statusDisplay
+                            lang
                         }
+                    }
 
-                    `,
-                variables: {
-                    username,
-                    limit
-                }
-            });
-        } catch (error) {
-            console.error(
-                `Error fetching recent submissions for ${username}:`,
-                error
-            );
-            throw error;
-        }
+                `,
+            variables: {
+                username,
+                limit
+            }
+        });
     }
 
     async fetchUserProfile(username: string): Promise<any> {
-        try {
-            const profile = await this.leetCodeApi.user(username);
-            return profile;
-        } catch (error) {
-            console.error(
-                `Error fetching user profile for ${username}:`,
-                error
-            );
-            throw error;
-        }
+        const profile = await this.leetCodeApi.user(username);
+        return profile;
     }
 
     async fetchUserContestRanking(
         username: string,
         attended: boolean = true
     ): Promise<any> {
-        try {
-            const contestInfo =
-                await this.leetCodeApi.user_contest_info(username);
-            if (contestInfo.userContestRankingHistory && attended) {
-                contestInfo.userContestRankingHistory =
-                    contestInfo.userContestRankingHistory.filter(
-                        (contest: any) => {
-                            return contest && contest.attended;
-                        }
-                    );
-            }
-            return contestInfo;
-        } catch (error) {
-            console.error(
-                `Error fetching user contest ranking for ${username}:`,
-                error
-            );
-            throw error;
+        const contestInfo = await this.leetCodeApi.user_contest_info(username);
+        if (contestInfo.userContestRankingHistory && attended) {
+            contestInfo.userContestRankingHistory =
+                contestInfo.userContestRankingHistory.filter((contest: any) => {
+                    return contest && contest.attended;
+                });
         }
+        return contestInfo;
     }
 
     async fetchDailyChallenge(): Promise<any> {
-        try {
-            const dailyChallenge = await this.leetCodeApi.daily();
-            return dailyChallenge;
-        } catch (error) {
-            console.error("Error fetching daily challenge:", error);
-            throw error;
-        }
+        const dailyChallenge = await this.leetCodeApi.daily();
+        return dailyChallenge;
     }
 
     async fetchProblem(titleSlug: string): Promise<any> {
-        try {
-            const problem = await this.leetCodeApi.problem(titleSlug);
-            return problem;
-        } catch (error) {
-            console.error(`Error fetching problem ${titleSlug}:`, error);
-            throw error;
-        }
+        const problem = await this.leetCodeApi.problem(titleSlug);
+        return problem;
     }
 
     async fetchProblemSimplified(titleSlug: string): Promise<any> {
-        try {
-            const problem = await this.fetchProblem(titleSlug);
-            if (!problem) {
-                throw new Error(`Problem ${titleSlug} not found`);
-            }
-
-            const filteredTopicTags =
-                problem.topicTags?.map((tag: any) => tag.slug) || [];
-
-            const filteredCodeSnippets =
-                problem.codeSnippets?.filter((snippet: any) =>
-                    ["cpp", "python3", "java"].includes(snippet.langSlug)
-                ) || [];
-
-            let parsedSimilarQuestions: any[] = [];
-            if (problem.similarQuestions) {
-                try {
-                    const allQuestions = JSON.parse(problem.similarQuestions);
-                    parsedSimilarQuestions = allQuestions
-                        .slice(0, 3)
-                        .map((q: any) => ({
-                            titleSlug: q.titleSlug,
-                            difficulty: q.difficulty
-                        }));
-                } catch (e) {
-                    console.error("Error parsing similarQuestions:", e);
-                }
-            }
-
-            return {
-                titleSlug,
-                questionId: problem.questionId,
-                title: problem.title,
-                content: problem.content,
-                difficulty: problem.difficulty,
-                topicTags: filteredTopicTags,
-                codeSnippets: filteredCodeSnippets,
-                exampleTestcases: problem.exampleTestcases,
-                hints: problem.hints,
-                similarQuestions: parsedSimilarQuestions
-            };
-        } catch (error) {
-            console.error(
-                `Error fetching simplified problem ${titleSlug}:`,
-                error
-            );
-            throw error;
+        const problem = await this.fetchProblem(titleSlug);
+        if (!problem) {
+            throw new Error(`Problem ${titleSlug} not found`);
         }
+
+        const filteredTopicTags =
+            problem.topicTags?.map((tag: any) => tag.slug) || [];
+
+        const filteredCodeSnippets =
+            problem.codeSnippets?.filter((snippet: any) =>
+                ["cpp", "python3", "java"].includes(snippet.langSlug)
+            ) || [];
+
+        let parsedSimilarQuestions: any[] = [];
+        if (problem.similarQuestions) {
+            try {
+                const allQuestions = JSON.parse(problem.similarQuestions);
+                parsedSimilarQuestions = allQuestions
+                    .slice(0, 3)
+                    .map((q: any) => ({
+                        titleSlug: q.titleSlug,
+                        difficulty: q.difficulty
+                    }));
+            } catch (e) {
+                logger.error("Error parsing similarQuestions:", {
+                    error: e
+                });
+            }
+        }
+
+        return {
+            titleSlug,
+            questionId: problem.questionId,
+            title: problem.title,
+            content: problem.content,
+            difficulty: problem.difficulty,
+            topicTags: filteredTopicTags,
+            codeSnippets: filteredCodeSnippets,
+            exampleTestcases: problem.exampleTestcases,
+            hints: problem.hints,
+            similarQuestions: parsedSimilarQuestions
+        };
     }
 
     async searchProblems(
@@ -251,33 +183,28 @@ export class LeetCodeGlobalService implements LeetCodeBaseService {
         offset: number = 0,
         searchKeywords?: string
     ): Promise<any> {
-        try {
-            const filters: any = {};
-            if (difficulty) {
-                filters.difficulty = difficulty.toUpperCase();
-            }
-            if (tags && tags.length > 0) {
-                filters.tags = tags;
-            }
-            if (searchKeywords) {
-                filters.searchKeywords = searchKeywords;
-            }
-
-            const response = await this.leetCodeApi.graphql({
-                query: SEARCH_PROBLEMS_QUERY,
-                variables: {
-                    categorySlug: category,
-                    limit,
-                    skip: offset,
-                    filters
-                }
-            });
-
-            return response.data?.problemsetQuestionList;
-        } catch (error) {
-            console.error("Error searching problems:", error);
-            throw error;
+        const filters: any = {};
+        if (difficulty) {
+            filters.difficulty = difficulty.toUpperCase();
         }
+        if (tags && tags.length > 0) {
+            filters.tags = tags;
+        }
+        if (searchKeywords) {
+            filters.searchKeywords = searchKeywords;
+        }
+
+        const response = await this.leetCodeApi.graphql({
+            query: SEARCH_PROBLEMS_QUERY,
+            variables: {
+                categorySlug: category,
+                limit,
+                skip: offset,
+                filters
+            }
+        });
+
+        return response.data?.problemsetQuestionList;
     }
 
     async fetchUserProgressQuestionList(options?: {
@@ -291,19 +218,15 @@ export class LeetCodeGlobalService implements LeetCodeBaseService {
                 "Authentication required to fetch user progress question list"
             );
         }
-        try {
-            const filters = {
-                skip: options?.offset || 0,
-                limit: options?.limit || 20,
-                questionStatus: options?.questionStatus as any,
-                difficulty: options?.difficulty as any[]
-            };
 
-            return await this.leetCodeApi.user_progress_questions(filters);
-        } catch (error) {
-            console.error("Error fetching user progress question list:", error);
-            throw error;
-        }
+        const filters = {
+            skip: options?.offset || 0,
+            limit: options?.limit || 20,
+            questionStatus: options?.questionStatus as any,
+            difficulty: options?.difficulty as any[]
+        };
+
+        return await this.leetCodeApi.user_progress_questions(filters);
     }
 
     /**
@@ -317,61 +240,52 @@ export class LeetCodeGlobalService implements LeetCodeBaseService {
         questionSlug: string,
         options?: any
     ): Promise<any> {
-        try {
-            const variables: any = {
-                questionSlug,
-                first: options?.limit || 5,
-                skip: options?.skip || 0,
-                orderBy: options?.orderBy || "HOT",
-                userInput: options?.userInput,
-                tagSlugs: options?.tagSlugs ?? []
-            };
+        const variables: any = {
+            questionSlug,
+            first: options?.limit || 5,
+            skip: options?.skip || 0,
+            orderBy: options?.orderBy || "HOT",
+            userInput: options?.userInput,
+            tagSlugs: options?.tagSlugs ?? []
+        };
 
-            return await this.leetCodeApi
-                .graphql({
-                    query: SOLUTION_ARTICLES_QUERY,
-                    variables
-                })
-                .then((res) => {
-                    const ugcArticleSolutionArticles =
-                        res.data?.ugcArticleSolutionArticles;
-                    if (!ugcArticleSolutionArticles) {
-                        return {
-                            totalNum: 0,
-                            hasNextPage: false,
-                            articles: []
-                        };
-                    }
-                    const data = {
-                        totalNum: ugcArticleSolutionArticles?.totalNum || 0,
-                        hasNextPage:
-                            ugcArticleSolutionArticles?.pageInfo?.hasNextPage ||
-                            false,
-                        articles:
-                            ugcArticleSolutionArticles?.edges
-                                ?.map((edge: any) => {
-                                    if (
-                                        edge?.node &&
-                                        edge.node.topicId &&
-                                        edge.node.slug
-                                    ) {
-                                        edge.node.articleUrl = `https://leetcode.com/problems/${questionSlug}/solutions/${edge.node.topicId}/${edge.node.slug}`;
-                                    }
-                                    return edge.node;
-                                })
-                                .filter((node: any) => node && node.canSee) ||
-                            []
+        return await this.leetCodeApi
+            .graphql({
+                query: SOLUTION_ARTICLES_QUERY,
+                variables
+            })
+            .then((res) => {
+                const ugcArticleSolutionArticles =
+                    res.data?.ugcArticleSolutionArticles;
+                if (!ugcArticleSolutionArticles) {
+                    return {
+                        totalNum: 0,
+                        hasNextPage: false,
+                        articles: []
                     };
+                }
+                const data = {
+                    totalNum: ugcArticleSolutionArticles?.totalNum || 0,
+                    hasNextPage:
+                        ugcArticleSolutionArticles?.pageInfo?.hasNextPage ||
+                        false,
+                    articles:
+                        ugcArticleSolutionArticles?.edges
+                            ?.map((edge: any) => {
+                                if (
+                                    edge?.node &&
+                                    edge.node.topicId &&
+                                    edge.node.slug
+                                ) {
+                                    edge.node.articleUrl = `https://leetcode.com/problems/${questionSlug}/solutions/${edge.node.topicId}/${edge.node.slug}`;
+                                }
+                                return edge.node;
+                            })
+                            .filter((node: any) => node && node.canSee) || []
+                };
 
-                    return data;
-                });
-        } catch (error) {
-            console.error(
-                `Error fetching solutions for ${questionSlug}:`,
-                error
-            );
-            throw error;
-        }
+                return data;
+            });
     }
 
     /**
@@ -381,24 +295,16 @@ export class LeetCodeGlobalService implements LeetCodeBaseService {
      * @returns Promise resolving to the solution detail data
      */
     async fetchSolutionArticleDetail(topicId: string): Promise<any> {
-        try {
-            return await this.leetCodeApi
-                .graphql({
-                    query: SOLUTION_ARTICLE_DETAIL_QUERY,
-                    variables: {
-                        topicId
-                    }
-                })
-                .then((response) => {
-                    return response.data?.ugcArticleSolutionArticle;
-                });
-        } catch (error) {
-            console.error(
-                `Error fetching solution detail for topic ${topicId}:`,
-                error
-            );
-            throw error;
-        }
+        return await this.leetCodeApi
+            .graphql({
+                query: SOLUTION_ARTICLE_DETAIL_QUERY,
+                variables: {
+                    topicId
+                }
+            })
+            .then((response) => {
+                return response.data?.ugcArticleSolutionArticle;
+            });
     }
 
     /**

@@ -14,6 +14,7 @@ import { registerNoteTools } from "./mcp/tools/note-tools.js";
 import { registerProblemTools } from "./mcp/tools/problem-tools.js";
 import { registerSolutionTools } from "./mcp/tools/solution-tools.js";
 import { registerUserTools } from "./mcp/tools/user-tools.js";
+import logger from "./utils/logger.js";
 
 /**
  * Parses and validates command line arguments for the LeetCode MCP Server.
@@ -32,7 +33,7 @@ function parseArgs() {
     });
 
     if (args.help) {
-        console.log(`LeetCode MCP Server - Model Context Protocol server for LeetCode
+        logger.info(`LeetCode MCP Server - Model Context Protocol server for LeetCode
 
   Usage: leetcode-mcp-server [options]
 
@@ -49,7 +50,7 @@ function parseArgs() {
     };
 
     if (options.site !== "global" && options.site !== "cn") {
-        console.error("The site must be either 'global' or 'cn'");
+        logger.error("The site must be either 'global' or 'cn'");
         process.exit(1);
     }
 
@@ -103,6 +104,6 @@ async function main() {
 }
 
 main().catch((error) => {
-    console.error("Failed to start LeetCode MCP Server:", error);
+    logger.error("Failed to start LeetCode MCP Server:", error);
     process.exit(1);
 });

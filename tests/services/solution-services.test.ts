@@ -2,6 +2,7 @@ import { Credential, LeetCode, LeetCodeCN } from "leetcode-query";
 import { describe, expect, it } from "vitest";
 import { LeetCodeCNService } from "../../src/leetcode/leetcode-cn-service.js";
 import { LeetCodeGlobalService } from "../../src/leetcode/leetcode-global-service.js";
+import logger from "../../src/utils/logger.js";
 
 describe("LeetCode Solution Services", () => {
     describe("LeetCodeGlobalService", () => {
@@ -43,12 +44,13 @@ describe("LeetCode Solution Services", () => {
             it("should handle errors properly for invalid slugs", async () => {
                 const invalidSlug = `invalid-slug-${Date.now()}`;
 
-                try {
+                const data =
                     await service.fetchQuestionSolutionArticles(invalidSlug);
-                    expect(true).toBe(false);
-                } catch (error) {
-                    expect(error).toBeDefined();
-                }
+
+                expect(data).toBeDefined();
+                expect(data.totalNum).toBe(0);
+                expect(data.articles).toBeDefined();
+                expect(data.articles.length).toBe(0);
             }, 30000);
         });
 
@@ -63,19 +65,18 @@ describe("LeetCode Solution Services", () => {
                     !solutionsResult.edges ||
                     solutionsResult.edges.length === 0
                 ) {
-                    console.log(
+                    logger.info(
                         "No solutions found for two-sum, skipping test"
                     );
                     return;
                 }
 
                 const topicId = solutionsResult.edges[0].node.topic.id;
-                console.log(`Using topicId: ${topicId} for detail fetch`);
+                logger.info(`Using topicId: ${topicId} for detail fetch`);
 
                 const result =
                     await service.fetchSolutionArticleDetail(topicId);
 
-                expect(result).toBeDefined();
                 expect(result).toBeDefined();
                 expect(result.title).toBeDefined();
                 expect(result.content).toBeDefined();
@@ -83,13 +84,9 @@ describe("LeetCode Solution Services", () => {
 
             it("should handle errors properly for invalid topicIds", async () => {
                 const invalidTopicId = `invalid-topic-${Date.now()}`;
-
-                try {
-                    await service.fetchSolutionArticleDetail(invalidTopicId);
-                    expect(true).toBe(false);
-                } catch (error) {
-                    expect(error).toBeDefined();
-                }
+                await expect(
+                    service.fetchSolutionArticleDetail(invalidTopicId)
+                ).resolves.toBeNull();
             }, 30000);
         });
     });
@@ -110,7 +107,7 @@ describe("LeetCode Solution Services", () => {
                 expect(result.totalNum).toBeTypeOf("number");
                 expect(Array.isArray(result.articles)).toBe(true);
 
-                console.log(
+                logger.info(
                     `Found ${result.totalNum} solutions for ${questionSlug} on CN`
                 );
             }, 30000);
@@ -134,13 +131,13 @@ describe("LeetCode Solution Services", () => {
 
             it("should handle errors properly for invalid slugs", async () => {
                 const invalidSlug = `invalid-slug-${Date.now()}`;
-
-                try {
+                const data =
                     await service.fetchQuestionSolutionArticles(invalidSlug);
-                    expect(true).toBe(false);
-                } catch (error) {
-                    expect(error).toBeDefined();
-                }
+
+                expect(data).toBeDefined();
+                expect(data.totalNum).toBe(0);
+                expect(data.articles).toBeDefined();
+                expect(data.articles.length).toBe(0);
             }, 30000);
         });
 
@@ -155,14 +152,14 @@ describe("LeetCode Solution Services", () => {
                     !solutionsResult.edges ||
                     solutionsResult.edges.length === 0
                 ) {
-                    console.log(
+                    logger.info(
                         "No solutions found for two-sum on CN, skipping test"
                     );
                     return;
                 }
 
                 const slug = solutionsResult.edges[0].node.slug;
-                console.log(`Using slug: ${slug} for detail fetch on CN`);
+                logger.info(`Using slug: ${slug} for detail fetch on CN`);
 
                 const result = await service.fetchSolutionArticleDetail(slug);
 
@@ -174,12 +171,9 @@ describe("LeetCode Solution Services", () => {
             it("should handle errors properly for invalid slugs", async () => {
                 const invalidSlug = `invalid-slug-${Date.now()}`;
 
-                try {
-                    await service.fetchSolutionArticleDetail(invalidSlug);
-                    expect(true).toBe(false);
-                } catch (error) {
-                    expect(error).toBeDefined();
-                }
+                await expect(
+                    service.fetchSolutionArticleDetail(invalidSlug)
+                ).resolves.toBeNull();
             }, 30000);
         });
     });

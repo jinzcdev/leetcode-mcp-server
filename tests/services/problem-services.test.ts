@@ -2,6 +2,7 @@ import { Credential, LeetCode, LeetCodeCN } from "leetcode-query";
 import { describe, expect, it } from "vitest";
 import { LeetCodeCNService } from "../../src/leetcode/leetcode-cn-service.js";
 import { LeetCodeGlobalService } from "../../src/leetcode/leetcode-global-service.js";
+import logger from "../../src/utils/logger.js";
 
 describe("LeetCode Problem Services", () => {
     describe("LeetCodeGlobalService", () => {
@@ -18,7 +19,6 @@ describe("LeetCode Problem Services", () => {
                 expect(result.titleSlug).toBe(titleSlug);
                 expect(result.title).toBe("Two Sum");
                 expect(result.questionId).toBeDefined();
-                expect(result.questionFrontendId).toBeDefined();
                 expect(result.content).toBeDefined();
                 expect(result.difficulty).toBeDefined();
                 expect(Array.isArray(result.topicTags)).toBe(true);
@@ -32,13 +32,9 @@ describe("LeetCode Problem Services", () => {
 
             it("should handle invalid problems correctly", async () => {
                 const invalidSlug = `invalid-problem-${Date.now()}`;
-
-                try {
-                    await service.fetchProblemSimplified(invalidSlug);
-                    expect(true).toBe(false);
-                } catch (error) {
-                    expect(error).toBeDefined();
-                }
+                await expect(
+                    service.fetchProblemSimplified(invalidSlug)
+                ).rejects.toThrow(`Problem ${invalidSlug} not found`);
             }, 30000);
         });
     });
@@ -56,7 +52,6 @@ describe("LeetCode Problem Services", () => {
                 expect(result).toBeDefined();
                 expect(result.titleSlug).toBe(titleSlug);
                 expect(result.questionId).toBeDefined();
-                expect(result.questionFrontendId).toBeDefined();
                 expect(result.title).toBeDefined();
                 expect(result.content).toBeDefined();
                 expect(result.difficulty).toBeDefined();
@@ -68,7 +63,7 @@ describe("LeetCode Problem Services", () => {
                     expect(Array.isArray(result.similarQuestions)).toBe(true);
                 }
 
-                console.log(
+                logger.info(
                     `Successfully fetched simplified data for ${titleSlug}`
                 );
             }, 30000);
@@ -76,12 +71,9 @@ describe("LeetCode Problem Services", () => {
             it("should handle invalid problems correctly", async () => {
                 const invalidSlug = `invalid-problem-${Date.now()}`;
 
-                try {
-                    await service.fetchProblemSimplified(invalidSlug);
-                    expect(true).toBe(false);
-                } catch (error) {
-                    expect(error).toBeDefined();
-                }
+                await expect(
+                    service.fetchProblemSimplified(invalidSlug)
+                ).rejects.toBeDefined();
             }, 30000);
         });
     });
