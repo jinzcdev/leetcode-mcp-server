@@ -384,6 +384,31 @@ export class LeetCodeGlobalService implements LeetCodeBaseService {
         throw new Error("Notes feature is not supported in LeetCode Global");
     }
 
+    /**
+     * Note feature is not supported in LeetCode Global.
+     * This method is implemented to satisfy the interface but will always throw an error.
+     */
+    async createUserNote(
+        content: string,
+        noteType: string,
+        targetId: string,
+        summary: string
+    ): Promise<any> {
+        throw new Error("Notes feature is not supported in LeetCode Global");
+    }
+
+    /**
+     * Note feature is not supported in LeetCode Global.
+     * This method is implemented to satisfy the interface but will always throw an error.
+     */
+    async updateUserNote(
+        noteId: string,
+        content: string,
+        summary: string
+    ): Promise<any> {
+        throw new Error("Notes feature is not supported in LeetCode Global");
+    }
+
     isAuthenticated(): boolean {
         return (
             !!this.credential &&

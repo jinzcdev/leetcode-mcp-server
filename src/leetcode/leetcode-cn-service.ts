@@ -1,7 +1,9 @@
 import { Credential, LeetCodeCN } from "leetcode-query";
 import {
     NOTE_AGGREGATE_QUERY,
-    NOTE_BY_QUESTION_ID_QUERY
+    NOTE_BY_QUESTION_ID_QUERY,
+    NOTE_CREATE_MUTATION,
+    NOTE_UPDATE_MUTATION
 } from "./graphql/cn/note-queries.js";
 import { SEARCH_PROBLEMS_QUERY } from "./graphql/cn/search-problems.js";
 import { SOLUTION_ARTICLE_DETAIL_QUERY } from "./graphql/cn/solution-article-detail.js";
@@ -459,6 +461,97 @@ export class LeetCodeCNService implements LeetCodeBaseService {
                 `Error fetching notes for question ${questionId}:`,
                 error
             );
+            throw error;
+        }
+    }
+
+    /**
+     * Creates a new note for a specific question on LeetCode CN.
+     * Available only on LeetCode CN platform.
+     *
+     * @param content - The content of the note
+     * @param noteType - The type of note (e.g., "COMMON_QUESTION")
+     * @param targetId - The ID of the target (e.g., question ID)
+     * @param summary - Optional summary of the note
+     * @returns Promise resolving to the created note data
+     */
+    async createUserNote(
+        content: string,
+        noteType: string,
+        targetId: string,
+        summary: string
+    ): Promise<any> {
+        if (!this.isAuthenticated()) {
+            throw new Error("Authentication required to create notes");
+        }
+
+        try {
+            const variables = {
+                content,
+                noteType,
+                targetId,
+                summary: summary || ""
+            };
+
+            return await this.leetCodeApi
+                .graphql({
+                    query: NOTE_CREATE_MUTATION,
+                    variables
+                })
+                .then((response) => {
+                    return (
+                        response.data?.noteCreateCommonNote || {
+                            ok: false,
+                            note: null
+                        }
+                    );
+                });
+        } catch (error) {
+            console.error(`Error creating note:`, error);
+            throw error;
+        }
+    }
+
+    /**
+     * Updates an existing note on LeetCode CN.
+     * Available only on LeetCode CN platform.
+     *
+     * @param noteId - The ID of the note to update
+     * @param content - The new content of the note
+     * @param summary - Optional new summary of the note
+     * @returns Promise resolving to the updated note data
+     */
+    async updateUserNote(
+        noteId: string,
+        content: string,
+        summary: string
+    ): Promise<any> {
+        if (!this.isAuthenticated()) {
+            throw new Error("Authentication required to update notes");
+        }
+
+        try {
+            const variables = {
+                noteId,
+                content,
+                summary: summary || ""
+            };
+
+            return await this.leetCodeApi
+                .graphql({
+                    query: NOTE_UPDATE_MUTATION,
+                    variables
+                })
+                .then((response) => {
+                    return (
+                        response.data?.noteUpdateUserNote || {
+                            ok: false,
+                            note: null
+                        }
+                    );
+                });
+        } catch (error) {
+            console.error(`Error updating note:`, error);
             throw error;
         }
     }

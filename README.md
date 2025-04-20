@@ -132,6 +132,8 @@ Command-line arguments take precedence over environment variables when both are 
 | ---------------- | :----: | :-: | :-----------: | ----------------------------------------------------- |
 | **search_notes** |   ❌   | ✅  |      ✅       | Searches for user notes with filtering options        |
 | **get_note**     |   ❌   | ✅  |      ✅       | Retrieves notes for a specific problem by question ID |
+| **create_note**  |   ❌   | ✅  |      ✅       | Creates a new note for a specific problem             |
+| **update_note**  |   ❌   | ✅  |      ✅       | Updates an existing note with new content             |
 
 ### Solutions
 
@@ -217,6 +219,16 @@ Command-line arguments take precedence over environment variables when both are 
   - `questionId`: The question ID of the LeetCode problem (string, required)
   - `limit`: Maximum number of notes to return (number, optional, default: 10)
   - `skip`: Number of notes to skip (number, optional, default: 0)
+- **create_note** - Creates a new note for a specific LeetCode problem
+
+  - `questionId`: The question ID of the LeetCode problem (string, required)
+  - `content`: The content of the note, supports markdown format (string, required)
+  - `summary`: An optional short summary or title for the note (string, optional)
+
+- **update_note** - Updates an existing note with new content or summary
+  - `noteId`: The ID of the note to update (string, required)
+  - `content`: The new content for the note, supports markdown format (string, required)
+  - `summary`: An optional new short summary or title for the note (string, optional)
 
 ### Solutions
 

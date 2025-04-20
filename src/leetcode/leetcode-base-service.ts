@@ -207,4 +207,38 @@ export interface LeetCodeBaseService {
         limit?: number,
         skip?: number
     ): Promise<any>;
+
+    /**
+     * Creates a new note for a specific question on LeetCode.
+     * Note: This feature is only available on LeetCode CN.
+     *
+     * @param content - The content of the note
+     * @param noteType - The type of note (e.g., "COMMON_QUESTION")
+     * @param targetId - The ID of the target (e.g., question ID)
+     * @param summary - Optional summary of the note
+     * @returns Promise resolving to the created note data
+     * @throws Error if not implemented or feature not supported
+     */
+    createUserNote(
+        content: string,
+        noteType: string,
+        targetId: string,
+        summary: string
+    ): Promise<any>;
+
+    /**
+     * Updates an existing note on LeetCode.
+     * Note: This feature is only available on LeetCode CN.
+     *
+     * @param noteId - The ID of the note to update
+     * @param content - The new content of the note
+     * @param summary - Optional new summary of the note
+     * @returns Promise resolving to the updated note data
+     * @throws Error if not implemented or feature not supported
+     */
+    updateUserNote(
+        noteId: string,
+        content: string,
+        summary: string
+    ): Promise<any>;
 }

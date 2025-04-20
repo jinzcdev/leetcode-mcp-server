@@ -149,6 +149,117 @@ export class NoteToolRegistry extends ToolRegistry {
                 }
             }
         );
+
+        // Note creation tool (CN-specific, requires authentication)
+        this.server.tool(
+            "create_note",
+            "Creates a new note for a specific LeetCode problem, allowing users to save personal comments and observations for future reference (requires authentication, CN only)",
+            {
+                questionId: z
+                    .string()
+                    .describe(
+                        "The question ID of the LeetCode problem to create a note for (e.g., '42' for 'Trapping Rain Water')"
+                    ),
+                content: z
+                    .string()
+                    .describe(
+                        "The content of the note (supports markdown format)"
+                    ),
+                summary: z
+                    .string()
+                    .optional()
+                    .default("")
+                    .describe("An optional short summary or title for the note")
+            },
+            async ({ questionId, content, summary = "" }) => {
+                try {
+                    const data = await this.leetcodeService.createUserNote(
+                        content,
+                        "COMMON_QUESTION",
+                        questionId,
+                        summary
+                    );
+
+                    return {
+                        content: [
+                            {
+                                type: "text",
+                                text: JSON.stringify({
+                                    success: data.ok,
+                                    note: data.note
+                                })
+                            }
+                        ]
+                    };
+                } catch (error: any) {
+                    return {
+                        content: [
+                            {
+                                type: "text",
+                                text: JSON.stringify({
+                                    error: "Failed to create note",
+                                    message: error.message
+                                })
+                            }
+                        ]
+                    };
+                }
+            }
+        );
+
+        // Note update tool (CN-specific, requires authentication)
+        this.server.tool(
+            "update_note",
+            "Updates an existing note with new content or summary, allowing users to refine their saved observations (requires authentication, CN only)",
+            {
+                noteId: z.string().describe("The ID of the note to update"),
+                content: z
+                    .string()
+                    .describe(
+                        "The new content for the note (supports markdown format)"
+                    ),
+                summary: z
+                    .string()
+                    .optional()
+                    .default("")
+                    .describe(
+                        "An optional new short summary or title for the note"
+                    )
+            },
+            async ({ noteId, content, summary = "" }) => {
+                try {
+                    const data = await this.leetcodeService.updateUserNote(
+                        noteId,
+                        content,
+                        summary
+                    );
+
+                    return {
+                        content: [
+                            {
+                                type: "text",
+                                text: JSON.stringify({
+                                    success: data.ok,
+                                    note: data.note
+                                })
+                            }
+                        ]
+                    };
+                } catch (error: any) {
+                    return {
+                        content: [
+                            {
+                                type: "text",
+                                text: JSON.stringify({
+                                    error: "Failed to update note",
+                                    message: error.message
+                                })
+                            }
+                        ]
+                    };
+                }
+            }
+        );
     }
 }
 

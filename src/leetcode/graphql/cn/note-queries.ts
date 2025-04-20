@@ -60,3 +60,56 @@ query noteOneTargetCommonNote(
         }
     }
 }`;
+
+/**
+ * GraphQL mutation for creating a new note on LeetCode CN
+ *
+ * @param content - Content of the note
+ * @param noteType - Type of note (e.g., "COMMON_QUESTION")
+ * @param targetId - ID of the target object (e.g., question ID)
+ * @param summary - Optional summary of the note
+ */
+export const NOTE_CREATE_MUTATION = `
+mutation noteCreateCommonNote(
+    $content: String!
+    $noteType: NoteCommonTypeEnum!
+    $targetId: String!
+    $summary: String!
+) {
+    noteCreateCommonNote(
+        content: $content
+        noteType: $noteType
+        targetId: $targetId
+        summary: $summary
+    ) {
+        note {
+            id
+            content
+            targetId
+        }
+        ok
+    }
+}`;
+
+/**
+ * GraphQL mutation for updating an existing note on LeetCode CN
+ *
+ * @param noteId - ID of the note to update
+ * @param content - New content for the note
+ * @param summary - Optional new summary for the note
+ */
+export const NOTE_UPDATE_MUTATION = `
+mutation noteUpdateUserNote(
+    $content: String!
+    $noteId: ID!
+    $summary: String!
+) {
+    noteUpdateUserNote(content: $content, noteId: $noteId, summary: $summary) {
+        note {
+            id
+            content
+            targetId
+        }
+        ok
+    }
+}`;

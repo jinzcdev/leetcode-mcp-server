@@ -132,6 +132,8 @@ npm run build && node build/index.js --site global
 | ---------------- | :----: | :----: | :------: | ------------------------------ |
 | **search_notes** |   ❌   |   ✅   |    ✅    | 使用过滤选项搜索用户笔记       |
 | **get_note**     |   ❌   |   ✅   |    ✅    | 通过题目 ID 获取特定题目的笔记 |
+| **create_note**  |   ❌   |   ✅   |    ✅    | 为特定题目创建新笔记           |
+| **update_note**  |   ❌   |   ✅   |    ✅    | 使用新内容更新现有笔记         |
 
 ### 题解
 
@@ -214,9 +216,21 @@ npm run build && node build/index.js --site global
   - `orderBy`：返回笔记的排序顺序（枚举："ASCENDING"、"DESCENDING"，可选，默认："DESCENDING"）
 
 - **get_note** - 获取特定 LeetCode 题目的用户笔记
+
   - `questionId`：LeetCode 题目的题目 ID（字符串，必需）
   - `limit`：返回的最大笔记数量（数字，可选，默认：10）
   - `skip`：要跳过的笔记数量（数字，可选，默认：0）
+
+- **create_note** - 为特定 LeetCode 题目创建新笔记
+
+  - `questionId`：LeetCode 题目的题目 ID（字符串，必需）
+  - `content`：笔记内容，支持 markdown 格式（字符串，必需）
+  - `summary`：可选的笔记简短摘要或标题（字符串，可选）
+
+- **update_note** - 使用新内容或摘要更新现有笔记
+  - `noteId`：要更新的笔记 ID（字符串，必需）
+  - `content`：笔记的新内容，支持 markdown 格式（字符串，必需）
+  - `summary`：可选的新简短摘要或标题（字符串，可选）
 
 ### 题解
 
