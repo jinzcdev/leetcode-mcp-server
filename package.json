@@ -12,7 +12,7 @@
         "algorithm"
     ],
     "scripts": {
-        "test": "vitest run",
+        "test": "vitest run | pino-pretty",
         "test:watch": "vitest watch",
         "build": "tsc && chmod u+x build/index.js",
         "start": "node build/index.js",
