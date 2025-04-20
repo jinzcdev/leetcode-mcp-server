@@ -2,8 +2,9 @@
 
 [![NPM Version](https://img.shields.io/npm/v/@jinzcdev/leetcode-mcp-server.svg)](https://www.npmjs.com/package/@jinzcdev/leetcode-mcp-server)
 [![GitHub License](https://img.shields.io/github/license/jinzcdev/leetcode-mcp-server.svg)](https://img.shields.io/github/license/jinzcdev/leetcode-mcp-server.svg)
-[![Stars](https://img.shields.io/github/stars/jinzcdev/leetcode-mcp-server)](https://github.com/jinzcdev/leetcode-mcp-server)
 [![smithery badge](https://smithery.ai/badge/@jinzcdev/leetcode-mcp-server)](https://smithery.ai/server/@jinzcdev/leetcode-mcp-server)
+[![Chinese Doc](https://img.shields.io/badge/简体中文-点击查看-orange)](README_zh-CN.md)
+[![Stars](https://img.shields.io/github/stars/jinzcdev/leetcode-mcp-server)](https://github.com/jinzcdev/leetcode-mcp-server)
 
 The LeetCode MCP Server is a [Model Context Protocol (MCP)](https://modelcontextprotocol.io/introduction) server that provides seamless integration with LeetCode APIs, enabling advanced automation and intelligent interaction with LeetCode's programming problems, contests, solutions, and user data.
 
@@ -13,11 +14,11 @@ The LeetCode MCP Server is a [Model Context Protocol (MCP)](https://modelcontext
 
 ## Features
 
-- **Multi-site Support**: Supports both leetcode.com and leetcode.cn platforms
-- **Problem Data Retrieval**: Obtain detailed problem descriptions, constraints, examples, and solution approaches
-- **User Data Access**: Retrieve user profiles, submission history, and contest performance
-- **Advanced Search Capabilities**: Filter problems by tags, difficulty levels, and categories
-- **Daily Challenge Tracking**: Easily access daily challenge problems
+- 🌐 **Multi-site Support**: Supports both leetcode.com and leetcode.cn platforms
+- 📊 **Problem Data Retrieval**: Obtain detailed problem descriptions, constraints, examples, and solution approaches
+- 👤 **User Data Access**: Retrieve user profiles, submission history, and contest performance
+- 🔍 **Advanced Search Capabilities**: Filter problems by tags, difficulty levels, and categories
+- 📅 **Daily Challenge Access**: Easily access daily challenge problems
 
 ## Prerequisites
 
@@ -102,86 +103,179 @@ Command-line arguments take precedence over environment variables when both are 
 - If `LEETCODE_SITE=cn` is set but you run `leetcode-mcp-server --site global`, the server will use `global`.
 - If `LEETCODE_SESSION` exists but you provide `--session "new_cookie"`, the command-line session value will be used.
 
-## Tools
+## Available Tools
 
-The server provides a comprehensive suite of tools categorized by functionality and platform compatibility.
+### Problems
 
-### Problem Tools
+| Tool                    | Global | CN  | Auth Required | Description                                                  |
+| ----------------------- | :----: | :-: | :-----------: | ------------------------------------------------------------ |
+| **get_daily_challenge** |   ✅   | ✅  |      ❌       | Retrieves today's LeetCode Daily Challenge problem           |
+| **get_problem**         |   ✅   | ✅  |      ❌       | Retrieves details for a specific LeetCode problem            |
+| **search_problems**     |   ✅   | ✅  |      ❌       | Searches for LeetCode problems with multiple filter criteria |
 
-Available on both Global and China sites, with optional authentication.
+### Users
 
-| Tool Name                    | Description                                                       | Parameters                                                                                                                                                                                                                                                                                             |
-| ---------------------------- | ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **leetcode_daily_challenge** | Retrieves today's LeetCode Daily Challenge with complete metadata | None                                                                                                                                                                                                                                                                                                   |
-| **leetcode_problem**         | Retrieves comprehensive details for a specified LeetCode problem  | `titleSlug` (string, required): Problem URL identifier (e.g., 'two-sum')                                                                                                                                                                                                                               |
-| **leetcode_search_problems** | Executes filtered searches across LeetCode problems               | `category` (string, optional): Problem classification<br>`tags` (string[], optional): Topic tags filter<br>`difficulty` (string, optional): Problem complexity level ('EASY', 'MEDIUM', 'HARD')<br>`limit` (number, optional): Maximum results count<br>`offset` (number, optional): Pagination offset |
+| Tool                              | Global | CN  | Auth Required | Description                                                  |
+| --------------------------------- | :----: | :-: | :-----------: | ------------------------------------------------------------ |
+| **get_user_profile**              |   ✅   | ✅  |      ❌       | Retrieves profile information for a LeetCode user            |
+| **get_user_contest_ranking**      |   ✅   | ✅  |      ❌       | Obtains contest ranking statistics for a user                |
+| **get_recent_ac_submissions**     |   ✅   | ✅  |      ❌       | Retrieves a user's recent accepted submissions               |
+| **get_recent_submissions**        |   ✅   | ❌  |      ❌       | Retrieves a user's recent submissions history                |
+| **get_user_status**               |   ✅   | ✅  |      ✅       | Retrieves current user's current status                      |
+| **get_problem_submission_report** |   ✅   | ✅  |      ✅       | Provides detailed submission analysis for a specific problem |
+| **get_problem_progress**          |   ✅   | ✅  |      ✅       | Retrieves current user's problem-solving progress            |
+| **get_all_submissions**           |   ✅   | ✅  |      ✅       | Retrieves current user's submission history                  |
 
-### User Tools
+### Notes
 
-Provides user-specific data across both platforms.
+| Tool             | Global | CN  | Auth Required | Description                                           |
+| ---------------- | :----: | :-: | :-----------: | ----------------------------------------------------- |
+| **search_notes** |   ❌   | ✅  |      ✅       | Searches for user notes with filtering options        |
+| **get_note**     |   ❌   | ✅  |      ✅       | Retrieves notes for a specific problem by question ID |
 
-| Tool Name                         | Description                                                | Parameters                                                                                                            |
-| --------------------------------- | ---------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| **leetcode_user_profile**         | Retrieves complete profile information for a LeetCode user | `username` (string, required): LeetCode username                                                                      |
-| **leetcode_user_contest_ranking** | Obtains contest ranking statistics for a user              | `username` (string, required): LeetCode username<br>`attended` (boolean, optional): Filter for attended contests only |
+### Solutions
 
-### Global Site-Specific User Tools
+| Tool                       | Global | CN  | Auth Required | Description                                                    |
+| -------------------------- | :----: | :-: | :-----------: | -------------------------------------------------------------- |
+| **list_problem_solutions** |   ✅   | ✅  |      ❌       | Retrieves a list of community solutions for a specific problem |
+| **get_problem_solution**   |   ✅   | ✅  |      ❌       | Retrieves the complete content of a specific solution          |
 
-Exclusive to leetcode.com platform.
+## Tool Parameters
 
-| Tool Name                          | Description                                             | Parameters                                                                                    |
-| ---------------------------------- | ------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
-| **leetcode_recent_submissions**    | Retrieves a user's recent submission history (Global)   | `username` (string, required): LeetCode username<br>`limit` (number, optional): Results limit |
-| **leetcode_recent_ac_submissions** | Retrieves a user's recent accepted submissions (Global) | `username` (string, required): LeetCode username<br>`limit` (number, optional): Results limit |
+### Problems
 
-### China Site-Specific User Tools
+- **get_daily_challenge** - Retrieves today's LeetCode Daily Challenge problem with complete details
 
-Exclusive to leetcode.cn platform.
+  - No parameters required
 
-| Tool Name                               | Description                                   | Parameters                                                                                          |
-| --------------------------------------- | --------------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| **leetcode_user_recent_ac_submissions** | Retrieves recent accepted submissions (China) | `username` (string, required): LeetCode China username<br>`limit` (number, optional): Results limit |
+- **get_problem** - Retrieves details about a specific LeetCode problem
 
-### Authenticated Common Tools
+  - `titleSlug`: The URL slug/identifier of the problem (string, required)
 
-Requires session authentication, available on both platforms.
+- **search_problems** - Searches for LeetCode problems based on multiple filter criteria
+  - `category`: Problem category filter (string, optional, default: "all-code-essentials")
+  - `tags`: List of topic tags to filter problems by (string[], optional)
+  - `difficulty`: Problem difficulty level filter (enum: "EASY", "MEDIUM", "HARD", optional)
+  - `searchKeywords`: Keywords to search in problem titles and descriptions (string, optional)
+  - `limit`: Maximum number of problems to return (number, optional, default: 10)
+  - `offset`: Number of problems to skip (number, optional)
 
-| Tool Name                              | Description                                   | Parameters                                                                                                                                                                                                                     |
-| -------------------------------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **leetcode_user_status**               | Retrieves authenticated user's current status | None                                                                                                                                                                                                                           |
-| **leetcode_problem_submission_detail** | Provides detailed submission analysis         | `id` (number, required): Submission ID                                                                                                                                                                                         |
-| **leetcode_user_progress_questions**   | Tracks user's problem-solving progress        | `offset` (number, required): Pagination offset<br>`limit` (number, required): Results limit<br>`questionStatus` (enum, optional): 'ATTEMPTED' or 'SOLVED' filter<br>`difficulty` (string[], optional): Complexity level filter |
+### Users
 
-### Global Site-Specific Authenticated Tools
+- **get_user_profile** - Retrieves profile information about a LeetCode user
 
-Authenticated tools exclusive to leetcode.com.
+  - `username`: LeetCode username (string, required)
 
-| Name                              | Description                                     | Parameters                                                                                                                                                  |
-| --------------------------------- | ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **leetcode_user_all_submissions** | Retrieves paginated submission history (Global) | `limit` (number, required): Results limit<br>`offset` (number, required): Pagination offset<br>`questionSlug` (string, optional): Problem identifier filter |
+- **get_user_contest_ranking** - Retrieves a user's contest ranking information
 
-### China Site-Specific Authenticated Tools
+  - `username`: LeetCode username (string, required)
+  - `attended`: Whether to include only the contests the user has participated in (boolean, optional, default: true)
 
-Authenticated tools exclusive to leetcode.cn.
+- **get_recent_submissions** - Retrieves a user's recent submissions on LeetCode Global
 
-| Tool Name                         | Description                                        | Parameters                                                                                                                                                                                                                                                                                                                |
-| --------------------------------- | -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **leetcode_user_all_submissions** | Retrieves comprehensive submission history (China) | `limit` (number, required): Results limit<br>`offset` (number, required): Pagination offset<br>`questionSlug` (string, optional): Problem identifier<br>`lang` (string, optional): Programming language filter<br>`status` (string, optional): Submission status filter<br>`lastKey` (string, optional): Pagination token |
+  - `username`: LeetCode username (string, required)
+  - `limit`: Maximum number of submissions to return (number, optional, default: 10)
 
-## Resources
+- **get_recent_ac_submissions** - Retrieves a user's recent accepted submissions
 
-The server provides reference resources for platform metadata access via URI endpoints.
+  - `username`: LeetCode username (string, required)
+  - `limit`: Maximum number of submissions to return (number, optional, default: 10)
 
-| Resource Name          | Description                                    | URI                                                                           |
-| ---------------------- | ---------------------------------------------- | ----------------------------------------------------------------------------- |
-| **problem-categories** | Complete problem classification categories     | `leetcode://problems/categories/all`                                          |
-| **problem-tags**       | Algorithmic and data structure tags collection | `leetcode://problems/tags/all`                                                |
-| **problem-langs**      | Supported programming languages list           | `leetcode://problems/langs/all`                                               |
-| **solution-article**   | A LeetCode solution article                    | global: `leetcode://solutions/{topicId}`<br>cn: `leetcode://solutions/{slug}` |
+- **get_user_status** - Retrieves the current user's status
+
+  - No parameters required
+
+- **get_problem_submission_report** - Retrieves detailed information about a specific submission
+
+  - `id`: The numerical submission ID (number, required)
+
+- **get_problem_progress** - Retrieves the current user's problem-solving progress
+
+  - `offset`: Number of questions to skip (number, optional, default: 0)
+  - `limit`: Maximum number of questions to return (number, optional, default: 100)
+  - `questionStatus`: Filter by question status (enum: "ATTEMPTED", "SOLVED", optional)
+  - `difficulty`: Filter by difficulty levels (string[], optional)
+
+- **get_all_submissions** - Retrieves paginated list of user's submissions
+  - `limit`: Maximum number of submissions to return (number, default: 20)
+  - `offset`: Number of submissions to skip (number, default: 0)
+  - `questionSlug`: Optional problem identifier (string, optional)
+  - `lang`: Programming language filter (string, optional, CN only)
+  - `status`: Submission status filter (enum: "AC", "WA", optional, CN only)
+  - `lastKey`: Pagination token for retrieving next page (string, optional, CN only)
+
+### Notes
+
+- **search_notes** - Searches for user notes on LeetCode China
+
+  - `keyword`: Search term to filter notes (string, optional)
+  - `limit`: Maximum number of notes to return (number, optional, default: 10)
+  - `skip`: Number of notes to skip (number, optional, default: 0)
+  - `orderBy`: Sort order for returned notes (enum: "ASCENDING", "DESCENDING", optional, default: "DESCENDING")
+
+- **get_note** - Retrieves user notes for a specific LeetCode problem
+  - `questionId`: The question ID of the LeetCode problem (string, required)
+  - `limit`: Maximum number of notes to return (number, optional, default: 10)
+  - `skip`: Number of notes to skip (number, optional, default: 0)
+
+### Solutions
+
+- **list_problem_solutions** - Retrieves a list of community solutions for a specific problem
+
+  - `questionSlug`: The URL slug/identifier of the problem (string, required)
+  - `limit`: Maximum number of solutions to return (number, optional, default: 10)
+  - `skip`: Number of solutions to skip (number, optional)
+  - `userInput`: Search term to filter solutions (string, optional)
+  - `tagSlugs`: Array of tag identifiers to filter solutions (string[], optional, default: [])
+  - `orderBy`: Sorting criteria for the returned solutions
+    - Global: enum: "HOT", "MOST_RECENT", "MOST_VOTES", optional, default: "HOT"
+    - CN: enum: "DEFAULT", "MOST_UPVOTE", "HOT", "NEWEST_TO_OLDEST", "OLDEST_TO_NEWEST", optional, default: "DEFAULT"
+
+- **get_problem_solution** - Retrieves the complete content of a specific solution
+  - `topicId`: Unique topic ID of the solution (string, required, Global only)
+  - `slug`: Unique slug/identifier of the solution (string, required, CN only)
+
+## Available Resources
+
+| Resource Name          | Global | CN  | Auth Required | Description                                                  |
+| ---------------------- | :----: | :-: | :-----------: | ------------------------------------------------------------ |
+| **problem-categories** |   ✅   | ✅  |      ❌       | A list of all problem classification categories              |
+| **problem-tags**       |   ✅   | ✅  |      ❌       | A detailed collection of algorithmic and data structure tags |
+| **problem-langs**      |   ✅   | ✅  |      ❌       | A complete list of all supported programming languages       |
+| **problem-detail**     |   ✅   | ✅  |      ❌       | Provides details about a specific problem                    |
+| **problem-solution**   |   ✅   | ✅  |      ❌       | Provides the complete content of a specific solution         |
+
+## Resource URIs
+
+- **problem-categories** - A list of all problem classification categories
+
+  - URI: `categories://problems/all`
+
+- **problem-tags** - A detailed collection of algorithmic and data structure tags
+
+  - URI: `tags://problems/all`
+
+- **problem-langs** - A complete list of all programming languages supported by LeetCode
+
+  - URI: `langs://problems/all`
+
+- **problem-detail** - Provides details about a specific LeetCode problem
+
+  - URI: `problem://{titleSlug}`
+  - Parameters:
+    - `titleSlug`: Problem identifier as it appears in the LeetCode URL
+
+- **problem-solution** - Provides the complete content of a specific solution
+  - Global URI: `solution://{topicId}`
+    - Parameters:
+      - `topicId`: Unique topic ID of the solution
+  - CN URI: `solution://{slug}`
+    - Parameters:
+      - `slug`: Unique slug/identifier of the solution
 
 ## Authentication
 
-Advanced features require LeetCode session authentication:
+User-specific data access requires LeetCode session authentication:
 
 1. Log in to LeetCode ([Global](https://leetcode.com) or [China](https://leetcode.cn) site)
 2. Extract `LEETCODE_SESSION` cookie from browser developer tools
