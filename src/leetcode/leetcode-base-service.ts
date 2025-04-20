@@ -152,11 +152,11 @@ export interface LeetCodeBaseService {
     isCN(): boolean;
 
     /**
-     * Retrieves a list of solution articles for a specific problem.
+     * Retrieves a list of solutions for a specific problem.
      *
      * @param questionSlug - The URL slug/identifier of the problem
-     * @param options - Optional parameters for filtering and sorting the solution articles
-     * @returns Promise resolving to the solution articles list data
+     * @param options - Optional parameters for filtering and sorting the solutions
+     * @returns Promise resolving to the solutions list data
      */
     fetchQuestionSolutionArticles(
         questionSlug: string,
@@ -164,10 +164,10 @@ export interface LeetCodeBaseService {
     ): Promise<any>;
 
     /**
-     * Retrieves detailed information about a specific solution article.
+     * Retrieves detailed information about a specific solution.
      *
-     * @param identifier - The identifier of the solution article (topicId for Global, slug for CN)
-     * @returns Promise resolving to the solution article detail data
+     * @param identifier - The identifier of the solution (topicId for Global, slug for CN)
+     * @returns Promise resolving to the solution detail data
      */
     fetchSolutionArticleDetail(identifier: string): Promise<any>;
 

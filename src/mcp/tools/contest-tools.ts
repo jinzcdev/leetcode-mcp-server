@@ -11,8 +11,8 @@ export class ContestToolRegistry extends ToolRegistry {
     protected registerCommon(): void {
         // User contest ranking tool
         this.server.tool(
-            "leetcode_user_contest_ranking",
-            "Retrieves a user's comprehensive contest ranking information on LeetCode, including overall ranking, participation history, and performance metrics across contests",
+            "get_user_contest_ranking",
+            "Retrieves a user's contest ranking information on LeetCode, including overall ranking, participation history, and performance metrics across contests",
             {
                 username: z
                     .string()

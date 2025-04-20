@@ -1,5 +1,5 @@
 /**
- * GraphQL query for fetching solution articles for a problem on LeetCode CN
+ * GraphQL query for fetching solutions for a problem on LeetCode CN
  * `orderBy` can be one of [DEFAULT, MOST_UPVOTE, HOT, NEWEST_TO_OLDEST, OLDEST_TO_NEWEST]
  */
 export const SOLUTION_ARTICLES_QUERY = `

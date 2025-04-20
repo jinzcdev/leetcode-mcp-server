@@ -7,19 +7,19 @@ import { ResourceRegistry } from "./resource-registry.js";
 
 /**
  * Solution resource registry class that handles registration of LeetCode solution-related resources.
- * This class manages resources for accessing solution articles and solution details.
+ * This class manages resources for accessing solutions and solution details.
  */
 export class SolutionResourceRegistry extends ResourceRegistry {
     protected registerGlobal(): void {
-        // Global solution article resource
+        // Global solution resource
         this.server.resource(
-            "solution-article",
-            new ResourceTemplate("leetcode://solutions/{topicId}", {
+            "problem-solution",
+            new ResourceTemplate("solution://{topicId}", {
                 list: undefined
             }),
             {
                 description:
-                    "Provides the complete content and metadata of a specific solution article on LeetCode Global, including the full article text, author information, and related navigation links. The topicId parameter in the URI identifies the specific solution article. This ID can be obtained from the 'topicId' field in the response of the 'leetcode_solution_article_list' tool.",
+                    "Provides the complete content and metadata of a specific problem solution, including the full article text, author information, and related navigation links. The topicId parameter in the URI identifies the specific solution. This ID can be obtained from the 'topicId' field in the response of the 'list_problem_solutions' tool.",
                 mimeType: "application/json"
             },
             async (uri, variables, extra) => {
@@ -47,7 +47,7 @@ export class SolutionResourceRegistry extends ResourceRegistry {
                             {
                                 uri: uri.toString(),
                                 text: JSON.stringify({
-                                    error: "Failed to fetch solution article",
+                                    error: "Failed to fetch solution",
                                     message: error.message
                                 }),
                                 mimeType: "application/json"
@@ -60,15 +60,15 @@ export class SolutionResourceRegistry extends ResourceRegistry {
     }
 
     protected registerChina(): void {
-        // China solution article resource
+        // China solution resource
         this.server.resource(
-            "solution-article",
-            new ResourceTemplate("leetcode://solutions/{slug}", {
+            "problem-solution",
+            new ResourceTemplate("solution://{slug}", {
                 list: undefined
             }),
             {
                 description:
-                    "Provides the complete content and metadata of a specific solution article, including the full article text, author information, and related navigation links. This slug can be obtained from the 'node.slug' field in the response of the 'leetcode_solution_article_list' tool.",
+                    "Provides the complete content and metadata of a specific solution, including the full article text, author information, and related navigation links. This slug can be obtained from the 'node.slug' field in the response of the 'list_problem_solutions' tool.",
                 mimeType: "application/json"
             },
             async (uri, variables, extra) => {
@@ -96,7 +96,7 @@ export class SolutionResourceRegistry extends ResourceRegistry {
                             {
                                 uri: uri.toString(),
                                 text: JSON.stringify({
-                                    error: "Failed to fetch solution article",
+                                    error: "Failed to fetch solution",
                                     message: error.message
                                 }),
                                 mimeType: "application/json"

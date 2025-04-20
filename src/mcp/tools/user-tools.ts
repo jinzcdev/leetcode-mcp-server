@@ -12,8 +12,8 @@ export class UserToolRegistry extends ToolRegistry {
     protected registerCommon(): void {
         // User profile tool
         this.server.tool(
-            "leetcode_user_profile",
-            "Retrieves comprehensive profile information about a LeetCode user, including user stats, solved problems, and profile details",
+            "get_user_profile",
+            "Retrieves profile information about a LeetCode user, including user stats, solved problems, and profile details",
             {
                 username: z
                     .string()
@@ -42,7 +42,7 @@ export class UserToolRegistry extends ToolRegistry {
     protected registerGlobal(): void {
         // Recent submissions tool (Global-specific)
         this.server.tool(
-            "leetcode_recent_submissions",
+            "get_recent_submissions",
             "Retrieves a user's recent submissions on LeetCode Global, including both accepted and failed submissions with detailed metadata",
             {
                 username: z
@@ -53,6 +53,7 @@ export class UserToolRegistry extends ToolRegistry {
                 limit: z
                     .number()
                     .optional()
+                    .default(10)
                     .describe(
                         "Maximum number of submissions to return (optional, defaults to server-defined limit)"
                     )
@@ -93,7 +94,7 @@ export class UserToolRegistry extends ToolRegistry {
 
         // Recent accepted submissions tool (Global-specific)
         this.server.tool(
-            "leetcode_recent_ac_submissions",
+            "get_recent_ac_submissions",
             "Retrieves a user's recent accepted (AC) submissions on LeetCode Global, focusing only on successfully completed problems",
             {
                 username: z
@@ -104,6 +105,7 @@ export class UserToolRegistry extends ToolRegistry {
                 limit: z
                     .number()
                     .optional()
+                    .default(10)
                     .describe(
                         "Maximum number of accepted submissions to return (optional, defaults to server-defined limit)"
                     )
@@ -146,7 +148,7 @@ export class UserToolRegistry extends ToolRegistry {
     protected registerChina(): void {
         // User recent AC submissions tool (CN-specific)
         this.server.tool(
-            "leetcode_user_recent_ac_submissions",
+            "get_recent_ac_submissions",
             "Retrieves a user's recent accepted (AC) submissions on LeetCode China, with details about each successfully solved problem",
             {
                 username: z
@@ -157,6 +159,7 @@ export class UserToolRegistry extends ToolRegistry {
                 limit: z
                     .number()
                     .optional()
+                    .default(10)
                     .describe(
                         "Maximum number of accepted submissions to return (optional, defaults to server-defined limit)"
                     )
@@ -202,8 +205,8 @@ export class UserToolRegistry extends ToolRegistry {
     protected registerAuthenticatedCommon(): void {
         // User status tool (requires authentication)
         this.server.tool(
-            "leetcode_user_status",
-            "Retrieves the current authenticated user's status on LeetCode, including login status, premium membership details, and user information (requires authentication)",
+            "get_user_status",
+            "Retrieves the current user's status on LeetCode, including login status, premium membership details, and user information (requires authentication)",
             async () => {
                 try {
                     const status = await this.leetcodeService.fetchUserStatus();
@@ -232,7 +235,7 @@ export class UserToolRegistry extends ToolRegistry {
 
         // Submission detail tool (requires authentication)
         this.server.tool(
-            "leetcode_problem_submission_detail",
+            "get_problem_submission_report",
             "Retrieves detailed information about a specific LeetCode submission by its ID, including source code, runtime stats, and test results (requires authentication)",
             {
                 id: z
@@ -273,8 +276,8 @@ export class UserToolRegistry extends ToolRegistry {
 
         // User progress questions tool (requires authentication)
         this.server.tool(
-            "leetcode_user_progress_questions",
-            "Retrieves the authenticated user's problem-solving status with filtering options, including detailed solution history for attempted or solved questions (requires authentication)",
+            "get_problem_progress",
+            "Retrieves the current user's problem-solving status with filtering options, including detailed solution history for attempted or solved questions (requires authentication)",
             {
                 offset: z
                     .number()
@@ -284,7 +287,7 @@ export class UserToolRegistry extends ToolRegistry {
                     ),
                 limit: z
                     .number()
-                    .default(200)
+                    .default(100)
                     .describe(
                         "The maximum number of questions to return in a single request"
                     ),
@@ -348,16 +351,18 @@ export class UserToolRegistry extends ToolRegistry {
     protected registerAuthenticatedGlobal(): void {
         // Global user submissions tool (requires authentication)
         this.server.tool(
-            "leetcode_user_all_submissions",
-            "Retrieves a paginated list of the authenticated user's submissions for a specific problem or all problems on LeetCode Global, with detailed submission metadata (requires authentication)",
+            "get_all_submissions",
+            "Retrieves a paginated list of the current user's submissions for a specific problem or all problems on LeetCode Global, with detailed submission metadata (requires authentication)",
             {
                 limit: z
                     .number()
+                    .default(20)
                     .describe(
                         "Maximum number of submissions to return per page (typically defaults to 20 if not specified)"
                     ),
                 offset: z
                     .number()
+                    .default(0)
                     .describe(
                         "Number of submissions to skip for pagination purposes"
                     ),
@@ -410,16 +415,18 @@ export class UserToolRegistry extends ToolRegistry {
     protected registerAuthenticatedChina(): void {
         // China user submissions tool (requires authentication, enhanced version with more parameters)
         this.server.tool(
-            "leetcode_user_all_submissions",
-            "Retrieves a comprehensive, paginated list of the authenticated user's submissions on LeetCode China with extensive filtering options, including pagination support via lastKey parameter (requires authentication)",
+            "get_all_submissions",
+            "Retrieves a list of the current user's submissions on LeetCode China with extensive filtering options, including pagination support via lastKey parameter (requires authentication)",
             {
                 limit: z
                     .number()
+                    .default(20)
                     .describe(
                         "Maximum number of submissions to return per page (typically defaults to 20 if not specified)"
                     ),
                 offset: z
                     .number()
+                    .default(0)
                     .describe(
                         "Number of submissions to skip for pagination purposes"
                     ),

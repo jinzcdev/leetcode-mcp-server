@@ -1,5 +1,5 @@
 /**
- * GraphQL query for fetching solution articles for a problem on LeetCode Global
+ * GraphQL query for fetching solutions for a problem on LeetCode Global
  * `orderBy` can be one of [HOT, MOST_RECENT, MOST_VOTES]
  */
 export const SOLUTION_ARTICLES_QUERY = `

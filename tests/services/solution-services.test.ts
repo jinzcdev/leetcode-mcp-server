@@ -10,7 +10,7 @@ describe("LeetCode Solution Services", () => {
         const service = new LeetCodeGlobalService(leetCodeApi, credential);
 
         describe("fetchQuestionSolutionArticles", () => {
-            it("should fetch solution articles with default options", async () => {
+            it("should fetch solutions with default options", async () => {
                 const questionSlug = "two-sum";
 
                 const result = await service.fetchQuestionSolutionArticles(
@@ -23,7 +23,7 @@ describe("LeetCode Solution Services", () => {
                 expect(Array.isArray(result.articles)).toBe(true);
             }, 30000);
 
-            it("should fetch solution articles with custom options", async () => {
+            it("should fetch solutions with custom options", async () => {
                 const result = await service.fetchQuestionSolutionArticles(
                     "two-sum",
                     {
@@ -53,7 +53,7 @@ describe("LeetCode Solution Services", () => {
         });
 
         describe("fetchSolutionArticleDetail", () => {
-            it("should fetch solution article detail correctly if topicId exists", async () => {
+            it("should fetch solution detail correctly if topicId exists", async () => {
                 const solutionsResult =
                     await service.fetchQuestionSolutionArticles("two-sum", {
                         limit: 1
@@ -100,7 +100,7 @@ describe("LeetCode Solution Services", () => {
         const service = new LeetCodeCNService(leetCodeApi, credential);
 
         describe("fetchQuestionSolutionArticles", () => {
-            it("should fetch solution articles with default options", async () => {
+            it("should fetch solutions with default options", async () => {
                 const questionSlug = "two-sum";
 
                 const result =
@@ -115,7 +115,7 @@ describe("LeetCode Solution Services", () => {
                 );
             }, 30000);
 
-            it("should fetch solution articles with custom options", async () => {
+            it("should fetch solutions with custom options", async () => {
                 const result = await service.fetchQuestionSolutionArticles(
                     "two-sum",
                     {
@@ -145,7 +145,7 @@ describe("LeetCode Solution Services", () => {
         });
 
         describe("fetchSolutionArticleDetail", () => {
-            it("should fetch solution article detail correctly if slug exists", async () => {
+            it("should fetch solution detail correctly if slug exists", async () => {
                 const solutionsResult =
                     await service.fetchQuestionSolutionArticles("two-sum", {
                         limit: 1

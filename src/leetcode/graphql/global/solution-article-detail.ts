@@ -1,5 +1,5 @@
 /**
- * GraphQL query for fetching a solution article's detail on LeetCode Global
+ * GraphQL query for fetching a solution's detail on LeetCode Global
  */
 export const SOLUTION_ARTICLE_DETAIL_QUERY = `
 query ugcArticleSolutionArticle($articleId: ID, $topicId: ID) {

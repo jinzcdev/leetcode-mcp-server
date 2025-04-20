@@ -256,11 +256,11 @@ export class LeetCodeGlobalService implements LeetCodeBaseService {
     }
 
     /**
-     * Retrieves a list of solution articles for a specific problem.
+     * Retrieves a list of solutions for a specific problem.
      *
      * @param questionSlug - The URL slug/identifier of the problem
-     * @param options - Optional parameters for filtering and sorting the solution articles
-     * @returns Promise resolving to the solution articles list data
+     * @param options - Optional parameters for filtering and sorting the solutions
+     * @returns Promise resolving to the solutions list data
      */
     async fetchQuestionSolutionArticles(
         questionSlug: string,
@@ -316,7 +316,7 @@ export class LeetCodeGlobalService implements LeetCodeBaseService {
                 });
         } catch (error) {
             console.error(
-                `Error fetching solution articles for ${questionSlug}:`,
+                `Error fetching solutions for ${questionSlug}:`,
                 error
             );
             throw error;
@@ -324,10 +324,10 @@ export class LeetCodeGlobalService implements LeetCodeBaseService {
     }
 
     /**
-     * Retrieves detailed information about a specific solution article on LeetCode Global.
+     * Retrieves detailed information about a specific solution on LeetCode Global.
      *
-     * @param topicId - The topic ID of the solution article
-     * @returns Promise resolving to the solution article detail data
+     * @param topicId - The topic ID of the solution
+     * @returns Promise resolving to the solution detail data
      */
     async fetchSolutionArticleDetail(topicId: string): Promise<any> {
         try {
@@ -343,7 +343,7 @@ export class LeetCodeGlobalService implements LeetCodeBaseService {
                 });
         } catch (error) {
             console.error(
-                `Error fetching solution article detail for topic ${topicId}:`,
+                `Error fetching solution detail for topic ${topicId}:`,
                 error
             );
             throw error;

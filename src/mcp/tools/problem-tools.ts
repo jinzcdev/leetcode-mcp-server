@@ -12,7 +12,7 @@ export class ProblemToolRegistry extends ToolRegistry {
     protected registerCommon(): void {
         // Daily challenge tool
         this.server.tool(
-            "leetcode_daily_challenge",
+            "get_daily_challenge",
             "Retrieves today's LeetCode Daily Challenge problem with complete details, including problem description, constraints, and examples",
             {},
             async () => {
@@ -33,8 +33,8 @@ export class ProblemToolRegistry extends ToolRegistry {
 
         // Problem details tool
         this.server.tool(
-            "leetcode_problem",
-            "Retrieves comprehensive details about a specific LeetCode problem, including its description, examples, constraints, and related information",
+            "get_problem",
+            "Retrieves details about a specific LeetCode problem, including its description, examples, constraints, and related information",
             {
                 titleSlug: z
                     .string()
@@ -60,7 +60,7 @@ export class ProblemToolRegistry extends ToolRegistry {
 
         // Search problems tool
         this.server.tool(
-            "leetcode_search_problems",
+            "search_problems",
             "Searches for LeetCode problems based on multiple filter criteria including categories, tags, difficulty levels, and keywords, with pagination support",
             {
                 category: z
