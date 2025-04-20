@@ -43,7 +43,10 @@ export class ProblemToolRegistry extends ToolRegistry {
                     )
             },
             async ({ titleSlug }) => {
-                const data = await this.leetcodeService.fetchProblem(titleSlug);
+                const data =
+                    await this.leetcodeService.fetchProblemSimplified(
+                        titleSlug
+                    );
                 return {
                     content: [
                         {

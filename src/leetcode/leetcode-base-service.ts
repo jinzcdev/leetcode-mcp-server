@@ -110,6 +110,15 @@ export interface LeetCodeBaseService {
     fetchDailyChallenge(): Promise<any>;
 
     /**
+     * Retrieves simplified information about a specific problem.
+     * Returns only the most useful fields for the user.
+     *
+     * @param titleSlug - Problem identifier/slug as used in the LeetCode URL
+     * @returns Promise resolving to the simplified problem details
+     */
+    fetchProblemSimplified(titleSlug: string): Promise<any>;
+
+    /**
      * Retrieves detailed information about a specific problem.
      *
      * @param titleSlug - Problem identifier/slug as used in the LeetCode URL

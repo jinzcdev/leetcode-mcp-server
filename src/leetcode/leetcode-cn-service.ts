@@ -206,6 +206,57 @@ export class LeetCodeCNService implements LeetCodeBaseService {
         }
     }
 
+    async fetchProblemSimplified(titleSlug: string): Promise<any> {
+        try {
+            const problem = await this.fetchProblem(titleSlug);
+            if (!problem) {
+                throw new Error(`Problem ${titleSlug} not found`);
+            }
+
+            const filteredTopicTags =
+                problem.topicTags?.map((tag: any) => tag.slug) || [];
+
+            const filteredCodeSnippets =
+                problem.codeSnippets?.filter((snippet: any) =>
+                    ["cpp", "python3", "java"].includes(snippet.langSlug)
+                ) || [];
+
+            let parsedSimilarQuestions: any[] = [];
+            if (problem.similarQuestions) {
+                try {
+                    const allQuestions = JSON.parse(problem.similarQuestions);
+                    parsedSimilarQuestions = allQuestions
+                        .slice(0, 3)
+                        .map((q: any) => ({
+                            titleSlug: q.titleSlug,
+                            difficulty: q.difficulty
+                        }));
+                } catch (e) {
+                    console.error("Error parsing similarQuestions:", e);
+                }
+            }
+
+            return {
+                titleSlug,
+                questionId: problem.questionId,
+                title: problem.title,
+                content: problem.content,
+                difficulty: problem.difficulty,
+                topicTags: filteredTopicTags,
+                codeSnippets: filteredCodeSnippets,
+                exampleTestcases: problem.exampleTestcases,
+                hints: problem.hints,
+                similarQuestions: parsedSimilarQuestions
+            };
+        } catch (error) {
+            console.error(
+                `Error fetching simplified problem ${titleSlug}:`,
+                error
+            );
+            throw error;
+        }
+    }
+
     async searchProblems(
         category?: string,
         tags?: string[],
