@@ -33,9 +33,12 @@
         "url": "git+https://github.com/jinzcdev/leetcode-mcp-server.git"
     },
     "lint-staged": {
-        "*.{js,ts}": [
+        "*.{js,ts,jsx,tsx}": [
             "prettier --write",
             "eslint --fix"
+        ],
+        "*.{md,json,yml,yaml,html,css}": [
+            "prettier --write"
         ]
     },
     "dependencies": {
