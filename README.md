@@ -14,7 +14,7 @@ The LeetCode MCP Server is a [Model Context Protocol (MCP)](https://modelcontext
 
 ## Features
 
-- 🌐 **Multi-site Support**: Compatible with both leetcode.com (Global) and leetcode.cn (China)
+- 🌐 **Multi-site Support**: Support​ both leetcode.com (Global) and leetcode.cn (China) platforms
 - 📊 **Problem Data Retrieval**: Obtain detailed problem descriptions, constraints, examples, official editorials, and ​user-submitted solutions
 - 👤 **User Data Access**: Retrieve user profiles, submission history, and contest performance
 - 🔒 **​Private Data Access**: Create and query user notes, track problem-solving progress, and analyze submission details (AC/WA analysis)
