@@ -110,6 +110,21 @@ export class LeetCodeGlobalService implements LeetCodeBaseService {
 
     async fetchUserProfile(username: string): Promise<any> {
         const profile = await this.leetCodeApi.user(username);
+        if (profile && profile.matchedUser) {
+            const { matchedUser } = profile;
+
+            return {
+                username: matchedUser.username,
+                realName: matchedUser.profile.realName,
+                userAvatar: matchedUser.profile.userAvatar,
+                countryName: matchedUser.profile.countryName,
+                githubUrl: matchedUser.githubUrl,
+                company: matchedUser.profile.company,
+                school: matchedUser.profile.school,
+                ranking: matchedUser.profile.ranking,
+                totalSubmissionNum: matchedUser.submitStats?.totalSubmissionNum
+            };
+        }
         return profile;
     }
 
@@ -211,7 +226,23 @@ export class LeetCodeGlobalService implements LeetCodeBaseService {
             }
         });
 
-        return response.data?.problemsetQuestionList;
+        const questionList = response.data?.problemsetQuestionList;
+        if (!questionList) {
+            return {
+                total: 0,
+                questions: []
+            };
+        }
+        return {
+            total: questionList.total,
+            questions: questionList.questions.map((question: any) => ({
+                title: question.title,
+                titleSlug: question.titleSlug,
+                difficulty: question.difficulty,
+                acRate: question.acRate,
+                topicTags: question.topicTags.map((tag: any) => tag.slug)
+            }))
+        };
     }
 
     async fetchUserProgressQuestionList(options?: {

@@ -121,7 +121,44 @@ export class LeetCodeCNService implements LeetCodeBaseService {
     }
 
     async fetchUserProfile(username: string): Promise<any> {
-        return await this.leetCodeApi.user(username);
+        const originalProfile = await this.leetCodeApi.user(username);
+
+        if (!originalProfile || !originalProfile.userProfilePublicProfile) {
+            return originalProfile;
+        }
+
+        const publicProfile = originalProfile.userProfilePublicProfile || {};
+        const userProfile = publicProfile.profile || {};
+        const skillSet = userProfile.skillSet || {};
+
+        const simplifiedProfile = {
+            username: userProfile.userSlug,
+            questionProgress: originalProfile.userProfileUserQuestionProgress,
+            siteRanking: publicProfile.siteRanking,
+            profile: {
+                userSlug: userProfile.userSlug,
+                realName: userProfile.realName,
+                userAvatar: userProfile.userAvatar,
+                globalLocation: userProfile.globalLocation,
+                school: userProfile.school?.name,
+                socialAccounts: (userProfile.socialAccounts || []).filter(
+                    (account: any) => !!account.profileUrl
+                ),
+                skillSet: {
+                    topics: (skillSet.topics || []).map(
+                        (topic: any) => topic.slug
+                    ),
+                    topicAreaScores: (skillSet.topicAreaScores || []).map(
+                        (item: any) => ({
+                            slug: item.topicArea?.slug,
+                            score: item.score
+                        })
+                    )
+                }
+            }
+        };
+
+        return simplifiedProfile;
     }
 
     async fetchUserContestRanking(
@@ -210,17 +247,28 @@ export class LeetCodeCNService implements LeetCodeBaseService {
             filters.searchKeywords = searchKeywords;
         }
 
-        const response = await this.leetCodeApi.graphql({
+        const { data } = await this.leetCodeApi.graphql({
             query: SEARCH_PROBLEMS_QUERY,
-            variables: {
-                categorySlug: category,
-                limit,
-                skip: offset,
-                filters
-            }
+            variables: { categorySlug: category, limit, skip: offset, filters }
         });
 
-        return response.data?.problemsetQuestionList;
+        const questionList = data?.problemsetQuestionList;
+        if (!questionList) {
+            return { hasMore: false, total: 0, questions: [] };
+        }
+
+        return {
+            hasMore: questionList.hasMore,
+            total: questionList.total,
+            questions: questionList.questions.map((q: any) => ({
+                title: q.title,
+                titleCn: q.titleCn,
+                titleSlug: q.titleSlug,
+                difficulty: q.difficulty,
+                acRate: q.acRate,
+                topicTags: q.topicTags.map((tag: any) => tag.slug)
+            }))
+        };
     }
 
     async fetchUserProgressQuestionList(options?: {
