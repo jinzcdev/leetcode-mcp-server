@@ -65,7 +65,29 @@ npm run build && node build/index.js --site global
 
 ### Visual Studio Code Integration
 
-Add the following JSON configuration to your User Settings (JSON) file Code. Access this by pressing `Ctrl/Cmd + Shift + P` and searching for `Preferences: Open User Settings (JSON)`.
+Add the following JSON configuration to your User Settings (JSON) file. Access this by pressing `Ctrl/Cmd + Shift + P` and searching for `Preferences: Open User Settings (JSON)`.
+
+#### Option 1: Using Environment Variables
+
+```json
+{
+  "mcp": {
+    "servers": {
+      "leetcode": {
+        "type": "stdio",
+        "command": "npx",
+        "args": ["-y", "@jinzcdev/leetcode-mcp-server"],
+        "env": {
+          "LEETCODE_SITE": "global",
+          "LEETCODE_SESSION": "<YOUR_LEETCODE_SESSION_COOKIE>"
+        }
+      }
+    }
+  }
+}
+```
+
+#### Option 2: Using Command Line Arguments
 
 ```json
 {
@@ -90,18 +112,18 @@ Add the following JSON configuration to your User Settings (JSON) file Code. Acc
 
 For LeetCode China site, modify the `--site` parameter to `cn`.
 
-## Environment Variables
-
-The server supports the following environment variables:
-
-- `LEETCODE_SITE`: LeetCode API endpoint ('global' or 'cn')
-- `LEETCODE_SESSION`: LeetCode session cookie for authenticated API access
-
-**Priority Note**:  
-Command-line arguments take precedence over environment variables when both are specified. For example:
-
-- If `LEETCODE_SITE=cn` is set but you run `leetcode-mcp-server --site global`, the server will use `global`.
-- If `LEETCODE_SESSION` exists but you provide `--session "new_cookie"`, the command-line session value will be used.
+> [!TIP]
+>
+> The server supports the following environment variables:
+>
+> - `LEETCODE_SITE`: LeetCode API endpoint ('global' or 'cn')
+> - `LEETCODE_SESSION`: LeetCode session cookie for authenticated API access
+>
+> **Priority Note**:
+> Command-line arguments take precedence over environment variables when both are specified. For example:
+>
+> - If `LEETCODE_SITE=cn` is set but you run `leetcode-mcp-server --site global`, the server will use `global`.
+> - If `LEETCODE_SESSION` exists but you provide `--session "new_cookie"`, the command-line session value will be used.
 
 ## Available Tools
 

@@ -65,7 +65,29 @@ npm run build && node build/index.js --site global
 
 ### Visual Studio Code 集成
 
-在您的用户设置 (JSON) 文件中添加以下 JSON 配置。通过按 `Ctrl/Cmd + Shift + P` 并搜索 `Preferences: Open User Settings (JSON)` 来访问此文件。
+在您的用户设置 (JSON) 文件中添加以下配置。通过按 `Ctrl/Cmd + Shift + P` 并搜索 `Preferences: Open User Settings (JSON)` 来访问此文件。
+
+#### 方式一：使用环境变量
+
+```json
+{
+  "mcp": {
+    "servers": {
+      "leetcode": {
+        "type": "stdio",
+        "command": "npx",
+        "args": ["-y", "@jinzcdev/leetcode-mcp-server"],
+        "env": {
+          "LEETCODE_SITE": "global",
+          "LEETCODE_SESSION": "<您的 LEETCODE 会话 COOKIE>"
+        }
+      }
+    }
+  }
+}
+```
+
+#### 方式二：使用命令行参数
 
 ```json
 {
@@ -90,18 +112,19 @@ npm run build && node build/index.js --site global
 
 对于 LeetCode 中国站点，请将 `--site` 参数修改为 `cn`。
 
-## 环境变量
-
-服务器支持以下环境变量：
-
-- `LEETCODE_SITE`：LeetCode API 端点（'global' 或 'cn'）
-- `LEETCODE_SESSION`：用于授权 API 访问的 LeetCode 会话 cookie
-
-**优先级说明**：  
-当同时指定命令行参数和环境变量时，命令行参数优先。例如：
-
-- 如果设置了 `LEETCODE_SITE=cn` 但您运行 `leetcode-mcp-server --site global`，服务器将使用 `global`。
-- 如果存在 `LEETCODE_SESSION` 但您提供了 `--session "new_cookie"`，将使用命令行中的会话值。
+> [!TIP]
+>
+> 服务支持以下环境变量：
+>
+> - `LEETCODE_SITE`：LeetCode API 端点（'global' 或 'cn'）
+> - `LEETCODE_SESSION`：用于授权 API 访问的 LeetCode 会话 cookie
+>
+> **优先级说明**：
+>
+> 当同时指定命令行参数和环境变量时，命令行参数优先。例如：
+>
+> - 如果设置了 `LEETCODE_SITE=cn` 但您运行 `leetcode-mcp-server --site global`，服务器将使用 `global`。
+> - 如果存在 `LEETCODE_SESSION` 但您提供了 `--session "new_cookie"`，将使用命令行中的参数值。
 
 ## 可用工具
 
