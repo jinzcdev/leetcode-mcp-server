@@ -32,7 +32,14 @@ export class LeetCodeGlobalService implements LeetCodeBaseService {
         if (!this.isAuthenticated()) {
             throw new Error("Authentication required to fetch user status");
         }
-        return await this.leetCodeApi.whoami();
+        return await this.leetCodeApi.whoami().then((res) => {
+            return {
+                isSignedIn: res?.isSignedIn ?? false,
+                username: res?.username ?? "",
+                avatar: res?.avatar ?? "",
+                isAdmin: res?.isAdmin ?? false
+            };
+        });
     }
 
     async fetchUserAllSubmissions(options: {

@@ -38,7 +38,15 @@ export class LeetCodeCNService implements LeetCodeBaseService {
         if (!this.isAuthenticated()) {
             throw new Error("Authentication required to fetch user status");
         }
-        return await this.leetCodeApi.userStatus();
+        return await this.leetCodeApi.userStatus().then((res) => {
+            return {
+                isSignedIn: res?.isSignedIn ?? false,
+                username: res?.username ?? "",
+                avatar: res?.avatar ?? "",
+                isAdmin: res?.isAdmin ?? false,
+                useTranslation: res?.useTranslation ?? false
+            };
+        });
     }
 
     async fetchUserAllSubmissions(options: {
