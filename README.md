@@ -58,8 +58,11 @@ git clone https://github.com/jinzcdev/leetcode-mcp-server.git
 # Navigate to the project directory
 cd leetcode-mcp-server
 
-# Build and run the server
-npm run build && node build/index.js --site global
+# Build the project
+npm install && npm run build
+
+# Run the server
+node build/index.js --site global
 ```
 
 ## Usage

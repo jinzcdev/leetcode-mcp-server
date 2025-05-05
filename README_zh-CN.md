@@ -42,11 +42,11 @@ npx -y @smithery/cli install @jinzcdev/leetcode-mcp-server --client claude
 # 从 npm 安装
 npm install @jinzcdev/leetcode-mcp-server -g
 
-# 使用全球站点配置运行
-npx -y @jinzcdev/leetcode-mcp-server --site global
+# 使用中国站点配置运行
+npx -y @jinzcdev/leetcode-mcp-server --site cn
 
 # 使用认证运行（访问私有数据）
-npx -y @jinzcdev/leetcode-mcp-server --site global --session <您的 LEETCODE 会话 COOKIE>
+npx -y @jinzcdev/leetcode-mcp-server --site cn --session <您的 LEETCODE 会话 COOKIE>
 ```
 
 或者，您可以克隆仓库并在本地运行：
@@ -58,8 +58,11 @@ git clone https://github.com/jinzcdev/leetcode-mcp-server.git
 # 导航到项目目录
 cd leetcode-mcp-server
 
-# 构建并运行服务器
-npm run build && node build/index.js --site global
+# 构建项目
+npm install && npm run build
+
+# 运行服务器
+node build/index.js --site cn
 ```
 
 ## 使用方法
@@ -79,7 +82,7 @@ npm run build && node build/index.js --site global
         "command": "npx",
         "args": ["-y", "@jinzcdev/leetcode-mcp-server"],
         "env": {
-          "LEETCODE_SITE": "global",
+          "LEETCODE_SITE": "cn",
           "LEETCODE_SESSION": "<您的 LEETCODE 会话 COOKIE>"
         }
       }
@@ -101,7 +104,7 @@ npm run build && node build/index.js --site global
           "-y",
           "@jinzcdev/leetcode-mcp-server",
           "--site",
-          "global",
+          "cn",
           "--session",
           "<您的 LEETCODE 会话 COOKIE>"
         ]
@@ -111,7 +114,7 @@ npm run build && node build/index.js --site global
 }
 ```
 
-对于 LeetCode 中国站点，请将 `--site` 参数修改为 `cn`。
+对于 LeetCode 全球站点，请将 `--site` 参数修改为 `global`。
 
 > [!TIP]
 >
