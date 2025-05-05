@@ -10,6 +10,17 @@ describe("LeetCode Problem Services", () => {
         const leetCodeApi = new LeetCode(credential);
         const service = new LeetCodeGlobalService(leetCodeApi, credential);
 
+        describe("fetchDailyChallenge", () => {
+            it("should return daily challenge data", async () => {
+                const result = await service.fetchDailyChallenge();
+
+                expect(result).toBeDefined();
+                expect(result.question).toBeDefined();
+                expect(result.question.title).toBeDefined();
+                expect(result.question.questionId).toBeDefined();
+            }, 30000);
+        });
+
         describe("fetchProblemSimplified", () => {
             it("should return simplified problem data", async () => {
                 const titleSlug = "two-sum";
@@ -43,6 +54,17 @@ describe("LeetCode Problem Services", () => {
         const credential = new Credential();
         const leetCodeApi = new LeetCodeCN(credential);
         const service = new LeetCodeCNService(leetCodeApi, credential);
+
+        describe("fetchDailyChallenge", () => {
+            it("should return daily challenge data", async () => {
+                service.fetchDailyChallenge().then((result) => {
+                    expect(result).toBeDefined();
+                    expect(result.question).toBeDefined();
+                    expect(result.question.title).toBeDefined();
+                    expect(result.question.questionId).toBeDefined();
+                });
+            }, 30000);
+        });
 
         describe("fetchProblemSimplified", () => {
             it("should return simplified problem data", async () => {
