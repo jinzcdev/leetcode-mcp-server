@@ -104,6 +104,6 @@ async function main() {
 }
 
 main().catch((error) => {
-    logger.error("Failed to start LeetCode MCP Server:", error);
+    logger.error("Failed to start LeetCode MCP Server: %s", error);
     process.exit(1);
 });

@@ -208,9 +208,7 @@ export class LeetCodeCNService implements LeetCodeBaseService {
                         difficulty: q.difficulty
                     }));
             } catch (e) {
-                logger.error("Error parsing similarQuestions:", {
-                    error: e
-                });
+                logger.error("Error parsing similarQuestions: %s", e);
             }
         }
 
@@ -359,7 +357,7 @@ export class LeetCodeCNService implements LeetCodeBaseService {
      * @returns Promise resolving to the solution detail data
      */
     async fetchSolutionArticleDetail(slug: string): Promise<any> {
-        const data = await this.leetCodeApi
+        return await this.leetCodeApi
             .graphql({
                 query: SOLUTION_ARTICLE_DETAIL_QUERY,
                 variables: {
@@ -369,8 +367,6 @@ export class LeetCodeCNService implements LeetCodeBaseService {
             .then((res) => {
                 return res.data?.solutionArticle;
             });
-        logger.info(data);
-        return data;
     }
 
     /**

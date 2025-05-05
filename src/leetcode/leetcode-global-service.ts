@@ -177,9 +177,7 @@ export class LeetCodeGlobalService implements LeetCodeBaseService {
                         difficulty: q.difficulty
                     }));
             } catch (e) {
-                logger.error("Error parsing similarQuestions:", {
-                    error: e
-                });
+                logger.error("Error parsing similarQuestions: %s", e);
             }
         }
 
