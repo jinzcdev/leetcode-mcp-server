@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/jinzcdev-leetcode-mcp-server-badge.png)](https://mseep.ai/app/jinzcdev-leetcode-mcp-server)
+
 # LeetCode MCP Server
 
 [![NPM Version](https://img.shields.io/npm/v/@jinzcdev/leetcode-mcp-server.svg)](https://www.npmjs.com/package/@jinzcdev/leetcode-mcp-server)
