@@ -6,6 +6,9 @@ import tseslint from "typescript-eslint";
 
 export default defineConfig([
     {
+        ignores: ["**/build/**", "**/dist/**", "**/node_modules/**"]
+    },
+    {
         files: ["**/*.{js,mjs,cjs,ts}"],
         plugins: { js },
         extends: ["js/recommended"],

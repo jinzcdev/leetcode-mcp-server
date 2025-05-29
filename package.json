@@ -17,7 +17,7 @@
         "build": "tsc && chmod u+x build/index.js",
         "start": "node build/index.js",
         "dev": "tsc-watch --onSuccess \"node build/index.js\"",
-        "format": "prettier --write . --ignore-path .gitignore",
+        "format": "prettier --write .",
         "prepare": "husky"
     },
     "bin": {
