@@ -165,19 +165,19 @@ export class NoteToolRegistry extends ToolRegistry {
                     .describe(
                         "The content of the note (supports markdown format)"
                     ),
-                summary: z
+                title: z
                     .string()
                     .optional()
                     .default("")
-                    .describe("An optional short summary or title for the note")
+                    .describe("An short title or summary for the note")
             },
-            async ({ questionId, content, summary = "" }) => {
+            async ({ questionId, content, title = "" }) => {
                 try {
                     const data = await this.leetcodeService.createUserNote(
                         content,
                         "COMMON_QUESTION",
                         questionId,
-                        summary
+                        title
                     );
 
                     return {
@@ -210,28 +210,26 @@ export class NoteToolRegistry extends ToolRegistry {
         // Note update tool (CN-specific, requires authentication)
         this.server.tool(
             "update_note",
-            "Updates an existing note with new content or summary, allowing users to refine their saved observations (requires authentication, CN only)",
+            "Updates an existing note with new content or title, allowing users to refine their saved observations (requires authentication, CN only)",
             {
                 noteId: z.string().describe("The ID of the note to update"),
                 content: z
                     .string()
+                    .default("")
                     .describe(
                         "The new content for the note (supports markdown format)"
                     ),
-                summary: z
+                title: z
                     .string()
-                    .optional()
                     .default("")
-                    .describe(
-                        "An optional new short summary or title for the note"
-                    )
+                    .describe("An new short title or summary for the note")
             },
-            async ({ noteId, content, summary = "" }) => {
+            async ({ noteId, content, title = "" }) => {
                 try {
                     const data = await this.leetcodeService.updateUserNote(
                         noteId,
                         content,
-                        summary
+                        title
                     );
 
                     return {
