@@ -23,7 +23,7 @@ The LeetCode MCP Server is a [Model Context Protocol (MCP)](https://modelcontext
 
 ## Prerequisites
 
-1. Node.js runtime environment
+1. Node.js (v20.x or above)
 2. (Optional) LeetCode session cookie for authenticated API access
 
 ## Installation
@@ -118,10 +118,10 @@ For LeetCode China site, modify the `--site` parameter to `cn`.
 
 > [!TIP]
 >
-> The server supports the following environment variables:
+> The server supports the following optional environment variables:
 >
-> - `LEETCODE_SITE`: LeetCode API endpoint ('global' or 'cn')
-> - `LEETCODE_SESSION`: LeetCode session cookie for authenticated API access
+> - `LEETCODE_SITE`: LeetCode API endpoint ('global' or 'cn', default: 'global')
+> - `LEETCODE_SESSION`: LeetCode session cookie for authenticated API access (default: empty)
 >
 > **Priority Note**:
 > Command-line arguments take precedence over environment variables when both are specified. For example:

@@ -23,7 +23,7 @@ LeetCode MCP Server 是一个基于 [模型上下文协议 (MCP)](https://modelc
 
 ## 前提条件
 
-1. Node.js 运行环境
+1. Node.js (v20.x 或更高版本)
 2. （可选）LeetCode 会话 cookie，用于授权访问 API
 
 ## 安装
@@ -118,10 +118,10 @@ node build/index.js --site cn
 
 > [!TIP]
 >
-> 服务支持以下环境变量：
+> 服务支持以下可选的环境变量：
 >
-> - `LEETCODE_SITE`：LeetCode API 端点（'global' 或 'cn'）
-> - `LEETCODE_SESSION`：用于授权 API 访问的 LeetCode 会话 cookie
+> - `LEETCODE_SITE`：LeetCode API 端点（'global' 或 'cn'，默认为 'global'）
+> - `LEETCODE_SESSION`：用于授权 API 访问的 LeetCode 会话 cookie（默认为空）
 >
 > **优先级说明**：
 >
