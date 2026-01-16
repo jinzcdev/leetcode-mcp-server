@@ -154,6 +154,45 @@ export interface LeetCodeBaseService {
     isAuthenticated(): boolean;
 
     /**
+     * Runs code against LeetCode's interpreter (Run) and polls the check endpoint
+     * until a non-pending state is reached.
+     *
+     * Requires authentication.
+     */
+    runCode(params: {
+        titleSlug: string;
+        questionId: string;
+        lang: string;
+        typedCode: string;
+        dataInput?: string;
+        timeoutMs?: number;
+        pollIntervalMs?: number;
+    }): Promise<{
+        start: Record<string, unknown>;
+        checkUrl: string;
+        check: Record<string, unknown>;
+    }>;
+
+    /**
+     * Submits code to LeetCode (Submit) and polls the check endpoint
+     * until a non-pending state is reached.
+     *
+     * Requires authentication.
+     */
+    submitSolution(params: {
+        titleSlug: string;
+        questionId: string;
+        lang: string;
+        typedCode: string;
+        timeoutMs?: number;
+        pollIntervalMs?: number;
+    }): Promise<{
+        start: Record<string, unknown>;
+        checkUrl: string;
+        check: Record<string, unknown>;
+    }>;
+
+    /**
      * Determines if the current service is for the China version of LeetCode.
      *
      * @returns True for LeetCode CN, false for LeetCode Global
