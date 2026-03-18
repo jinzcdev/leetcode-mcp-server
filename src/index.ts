@@ -13,6 +13,7 @@ import { registerContestTools } from "./mcp/tools/contest-tools.js";
 import { registerNoteTools } from "./mcp/tools/note-tools.js";
 import { registerProblemTools } from "./mcp/tools/problem-tools.js";
 import { registerSolutionTools } from "./mcp/tools/solution-tools.js";
+import { registerSubmissionTools } from "./mcp/tools/submission-tools.js";
 import { registerUserTools } from "./mcp/tools/user-tools.js";
 import logger from "./utils/logger.js";
 
@@ -95,6 +96,7 @@ async function main() {
     registerContestTools(server, leetcodeService);
     registerSolutionTools(server, leetcodeService);
     registerNoteTools(server, leetcodeService);
+    registerSubmissionTools(server, leetcodeService);
 
     registerProblemResources(server, leetcodeService);
     registerSolutionResources(server, leetcodeService);

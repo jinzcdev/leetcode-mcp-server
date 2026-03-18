@@ -1,4 +1,12 @@
 import { Credential, LeetCode } from "leetcode-query";
+import {
+    assertRunStartResponse,
+    assertSubmitStartResponse,
+    buildLeetCodeHeaders,
+    buildLeetCodeHttpAuth,
+    pollCheck,
+    postJson
+} from "../utils/leetcode-http.js";
 import logger from "../utils/logger.js";
 import { SEARCH_PROBLEMS_QUERY } from "./graphql/global/search-problems.js";
 import { SOLUTION_ARTICLE_DETAIL_QUERY } from "./graphql/global/solution-article-detail.js";
@@ -13,10 +21,25 @@ import { LeetCodeBaseService } from "./leetcode-base-service.js";
 export class LeetCodeGlobalService implements LeetCodeBaseService {
     private readonly leetCodeApi: LeetCode;
     private readonly credential: Credential;
+    private readonly origin = "https://leetcode.com";
 
     constructor(leetCodeApi: LeetCode, credential: Credential) {
         this.leetCodeApi = leetCodeApi;
         this.credential = credential;
+    }
+
+    private getHttpHeaders(titleSlug: string): HeadersInit {
+        const auth = buildLeetCodeHttpAuth({
+            session: this.credential.session ?? "",
+            csrfToken: this.credential.csrf ?? ""
+        });
+
+        const referer = `${this.origin}/problems/${titleSlug}/`;
+        return buildLeetCodeHeaders({
+            auth,
+            origin: this.origin,
+            referer
+        });
     }
 
     async fetchUserSubmissionDetail(id: number): Promise<any> {
@@ -400,6 +423,88 @@ export class LeetCodeGlobalService implements LeetCodeBaseService {
         summary: string
     ): Promise<any> {
         throw new Error("Notes feature is not supported in LeetCode Global");
+    }
+
+    async runCode(params: {
+        titleSlug: string;
+        questionId: string;
+        lang: string;
+        typedCode: string;
+        dataInput?: string;
+        timeoutMs?: number;
+        pollIntervalMs?: number;
+    }): Promise<{
+        start: Record<string, unknown>;
+        checkUrl: string;
+        check: Record<string, unknown>;
+    }> {
+        if (!this.isAuthenticated()) {
+            throw new Error("Authentication required to run code");
+        }
+
+        const headers = this.getHttpHeaders(params.titleSlug);
+        const startUrl = `${this.origin}/problems/${params.titleSlug}/interpret_solution/`;
+
+        const start = await postJson(
+            startUrl,
+            {
+                data_input: params.dataInput ?? "",
+                lang: params.lang,
+                question_id: params.questionId,
+                typed_code: params.typedCode
+            },
+            headers
+        );
+
+        assertRunStartResponse(start, `POST ${startUrl}`);
+
+        const checkUrl = `${this.origin}/submissions/detail/${start.interpret_id}/check/`;
+        const check = await pollCheck(checkUrl, headers, {
+            timeoutMs: params.timeoutMs,
+            pollIntervalMs: params.pollIntervalMs
+        });
+
+        return { start, checkUrl, check };
+    }
+
+    async submitSolution(params: {
+        titleSlug: string;
+        questionId: string;
+        lang: string;
+        typedCode: string;
+        timeoutMs?: number;
+        pollIntervalMs?: number;
+    }): Promise<{
+        start: Record<string, unknown>;
+        checkUrl: string;
+        check: Record<string, unknown>;
+    }> {
+        if (!this.isAuthenticated()) {
+            throw new Error("Authentication required to submit solution");
+        }
+
+        const headers = this.getHttpHeaders(params.titleSlug);
+        const startUrl = `${this.origin}/problems/${params.titleSlug}/submit/`;
+
+        const start = await postJson(
+            startUrl,
+            {
+                lang: params.lang,
+                question_id: params.questionId,
+                typed_code: params.typedCode
+            },
+            headers
+        );
+
+        assertSubmitStartResponse(start, `POST ${startUrl}`);
+
+        const checkUrl = `${this.origin}/submissions/detail/${start.submission_id}/check/`;
+        const check = await pollCheck(checkUrl, headers, {
+            timeoutMs: params.timeoutMs,
+            pollIntervalMs: params.pollIntervalMs
+        });
+
+        return { start, checkUrl, check };
     }
 
     isAuthenticated(): boolean {

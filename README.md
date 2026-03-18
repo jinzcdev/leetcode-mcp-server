@@ -152,6 +152,13 @@ For LeetCode China site, modify the `--site` parameter to `cn`.
 | **get_problem_progress**          |   ✅   | ✅  |      ✅       | Retrieves current user's problem-solving progress            |
 | **get_all_submissions**           |   ✅   | ✅  |      ✅       | Retrieves current user's submission history                  |
 
+### Submissions
+
+| Tool                | Global | CN  | Auth Required | Description                                                   |
+| ------------------- | :----: | :-: | :-----------: | ------------------------------------------------------------- |
+| **run_code**        |   ✅   | ✅  |      ✅       | Runs code for a problem and polls `/check/` until finished    |
+| **submit_solution** |   ✅   | ✅  |      ✅       | Submits code for a problem and polls `/check/` until finished |
+
 ### Notes
 
 | Tool             | Global | CN  | Auth Required | Description                                           |
@@ -231,6 +238,25 @@ For LeetCode China site, modify the `--site` parameter to `cn`.
   - `lang`: Programming language filter (string, optional, CN only)
   - `status`: Submission status filter (enum: "AC", "WA", optional, CN only)
   - `lastKey`: Pagination token for retrieving next page (string, optional, CN only)
+
+### Submissions
+
+- **run_code** - Runs code for a specific problem and waits until finished (requires authentication)
+
+  - `titleSlug`: The URL slug/identifier of the problem (string, required)
+  - `lang`: Programming language (string enum, required)
+  - `typedCode`: Source code to run (string, required)
+  - `dataInput`: Custom input to run (string, optional)
+  - `timeoutMs`: Polling timeout in milliseconds (number, optional, default: 120000)
+  - `pollIntervalMs`: Polling interval in milliseconds (number, optional, default: 1500)
+
+- **submit_solution** - Submits code for a specific problem and waits until finished (requires authentication)
+
+  - `titleSlug`: The URL slug/identifier of the problem (string, required)
+  - `lang`: Programming language (string enum, required)
+  - `typedCode`: Source code to submit (string, required)
+  - `timeoutMs`: Polling timeout in milliseconds (number, optional, default: 120000)
+  - `pollIntervalMs`: Polling interval in milliseconds (number, optional, default: 1500)
 
 ### Notes
 
