@@ -1,9 +1,9 @@
 # LeetCode MCP 服务器
 
 [![NPM Version](https://img.shields.io/npm/v/@jinzcdev/leetcode-mcp-server.svg)](https://www.npmjs.com/package/@jinzcdev/leetcode-mcp-server)
-[![GitHub License](https://img.shields.io/github/license/jinzcdev/leetcode-mcp-server.svg)](https://www.npmjs.com/package/@jinzcdev/leetcode-mcp-server)
-[![smithery badge](https://smithery.ai/badge/@jinzcdev/leetcode-mcp-server)](https://smithery.ai/server/@jinzcdev/leetcode-mcp-server)
-[![English Doc](https://img.shields.io/badge/English-Click-blue)](README.md)
+[![NPM Downloads](https://img.shields.io/npm/dm/@jinzcdev/leetcode-mcp-server.svg)](https://www.npmjs.com/package/@jinzcdev/leetcode-mcp-server)
+[![GitHub License](https://img.shields.io/github/license/jinzcdev/leetcode-mcp-server.svg)](./LICENSE)
+[![English Doc](https://img.shields.io/badge/English-View-orange)](README.md)
 [![Stars](https://img.shields.io/github/stars/jinzcdev/leetcode-mcp-server)](https://github.com/jinzcdev/leetcode-mcp-server)
 
 LeetCode MCP Server 是一个基于 [模型上下文协议 (MCP)](https://modelcontextprotocol.io/introduction) 的服务，提供与 LeetCode API 的无缝集成，实现与 LeetCode 编程题目、竞赛、题解和用户数据的高级自动化和智能交互。
