@@ -12,6 +12,10 @@ The LeetCode MCP Server is a [Model Context Protocol (MCP)](https://modelcontext
   <img width="380" height="200" src="https://glama.ai/mcp/servers/@jinzcdev/leetcode-mcp-server/badge" alt="LeetCode Server MCP server" />
 </a>
 
+## Hosted deployment
+
+A hosted deployment is available on [Fronteir AI](https://fronteir.ai/mcp/jinzcdev-leetcode-mcp-server).
+
 ## Features
 
 - 🌐 **Multi-site Support**: Support​ both leetcode.com (Global) and leetcode.cn (China) platforms
