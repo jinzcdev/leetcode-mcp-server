@@ -13,7 +13,7 @@ export class ProblemToolRegistry extends ToolRegistry {
         // Daily challenge tool
         this.server.tool(
             "get_daily_challenge",
-            "Retrieves today's LeetCode Daily Challenge problem with complete details, including problem description, constraints, and examples",
+            "Retrieves today's Daily Challenge problem with full description (read-only, no auth). Returns problem details for the current date as JSON. Use get_problem when you know a specific titleSlug; use search_problems to discover problems by filters.",
             {},
             async () => {
                 const data = await this.leetcodeService.fetchDailyChallenge();
@@ -34,12 +34,12 @@ export class ProblemToolRegistry extends ToolRegistry {
         // Problem details tool
         this.server.tool(
             "get_problem",
-            "Retrieves details about a specific LeetCode problem, including its description, examples, constraints, and related information",
+            "Retrieves a single LeetCode problem by titleSlug (read-only, no auth). Returns description, examples, constraints, and metadata as JSON. Use search_problems to find problems by keyword/tag/difficulty; use get_daily_challenge for today's featured problem.",
             {
                 titleSlug: z
                     .string()
                     .describe(
-                        "The URL slug/identifier of the problem (e.g., 'two-sum', 'add-two-numbers') as it appears in the LeetCode URL"
+                        "Problem URL slug (e.g., 'two-sum', 'add-two-numbers')—the path segment after /problems/"
                     )
             },
             async ({ titleSlug }) => {
@@ -64,43 +64,39 @@ export class ProblemToolRegistry extends ToolRegistry {
         // Search problems tool
         this.server.tool(
             "search_problems",
-            "Searches for LeetCode problems based on multiple filter criteria including categories, tags, difficulty levels, and keywords, with pagination support",
+            "Searches LeetCode problems by category, tags, difficulty, and keywords (read-only, no auth). Supports pagination via limit/offset. Returns matching problem list as JSON. Use get_problem when you already know the titleSlug; use this to browse or discover problems.",
             {
                 category: z
                     .enum(PROBLEM_CATEGORIES as [string])
                     .default("all-code-essentials")
                     .describe(
-                        "Problem category filter (e.g., 'algorithms', 'database', 'shell') to narrow down the problem domain"
+                        "Problem set category (e.g., 'algorithms', 'database'). Default: 'all-code-essentials'."
                     ),
                 tags: z
                     .array(z.enum(PROBLEM_TAGS as [string]))
                     .optional()
                     .describe(
-                        "List of topic tags to filter problems by (e.g., ['array', 'dynamic-programming', 'tree'])"
+                        "Topic tags to filter by, e.g. ['array', 'dynamic-programming']. Omit for no tag filter."
                     ),
                 difficulty: z
                     .enum(["EASY", "MEDIUM", "HARD"])
                     .optional()
-                    .describe(
-                        "Problem difficulty level filter to show only problems of a specific difficulty"
-                    ),
+                    .describe("Difficulty filter. Omit for all levels."),
                 searchKeywords: z
                     .string()
                     .optional()
                     .describe(
-                        "Keywords to search in problem titles and descriptions"
+                        "Keyword search in problem titles and descriptions"
                     ),
                 limit: z
                     .number()
                     .optional()
                     .default(10)
-                    .describe(
-                        "Maximum number of problems to return in a single request (for pagination)"
-                    ),
+                    .describe("Max results per page (default: 10)"),
                 offset: z
                     .number()
                     .optional()
-                    .describe("Number of problems to skip (for pagination)")
+                    .describe("Results to skip for pagination (default: 0)")
             },
             async ({
                 category,

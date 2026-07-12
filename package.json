@@ -18,7 +18,9 @@
         "start": "node build/index.js",
         "dev": "tsc-watch --onSuccess \"node build/index.js\"",
         "format": "prettier --write .",
-        "prepare": "husky"
+        "prepare": "husky",
+        "lint": "eslint .",
+        "lint:fix": "eslint . --fix"
     },
     "bin": {
         "leetcode-mcp-server": "build/index.js"
@@ -42,8 +44,8 @@
         ]
     },
     "dependencies": {
-        "@modelcontextprotocol/sdk": "^1.8.0",
-        "leetcode-query": "^2.0.0",
+        "@modelcontextprotocol/sdk": "^1.29.0",
+        "leetcode-query": "^2.0.1",
         "minimist": "^1.2.8",
         "pino": "^9.6.0",
         "ts-node": "^10.9.2",
@@ -70,6 +72,6 @@
         "pino-pretty": "^13.0.0"
     },
     "optionalDependencies": {
-        "@rollup/rollup-linux-x64-gnu": "^4.40.1"
+        "@rollup/rollup-linux-x64-gnu": "^4.62.2"
     }
 }

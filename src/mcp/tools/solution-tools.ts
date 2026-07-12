@@ -12,45 +12,41 @@ export class SolutionToolRegistry extends ToolRegistry {
         // Problem solutions listing tool (Global-specific)
         this.server.tool(
             "list_problem_solutions",
-            "Retrieves a list of community solutions for a specific LeetCode problem, including only metadata like topicId. To view the full content of a solution, use the 'get_problem_solution' tool with the topicId returned by this tool.",
+            "Lists community solution articles for a problem (read-only, no auth). Returns metadata only (topicId)—not full content. Use get_problem_solution with the returned topicId to read the full article. Do not call this when you already have a topicId and need the solution text.",
             {
                 questionSlug: z
                     .string()
                     .describe(
-                        "The URL slug/identifier of the problem to retrieve solutions for (e.g., 'two-sum', 'add-two-numbers'). This is the same string that appears in the LeetCode problem URL after '/problems/'"
+                        "Problem URL slug (e.g., 'two-sum')—same as in /problems/{slug}"
                     ),
                 limit: z
                     .number()
                     .optional()
                     .default(10)
-                    .describe(
-                        "Maximum number of solutions to return per request. Used for pagination and controlling response size. Default is 20 if not specified. Must be a positive integer."
-                    ),
+                    .describe("Max solutions per page (default: 10)"),
                 skip: z
                     .number()
                     .optional()
-                    .describe(
-                        "Number of solutions to skip before starting to collect results. Used in conjunction with 'limit' for implementing pagination. Default is 0 if not specified. Must be a non-negative integer."
-                    ),
+                    .describe("Solutions to skip for pagination (default: 0)"),
                 orderBy: z
                     .enum(["HOT", " MOST_RECENT", "MOST_VOTES"])
                     .default("HOT")
                     .optional()
                     .describe(
-                        "Sorting criteria for the returned solutions. 'DEFAULT' sorts by LeetCode's default algorithm (typically a combination of recency and popularity), 'MOST_VOTES' sorts by the number of upvotes (highest first), and 'MOST_RECENT' sorts by publication date (newest first)."
+                        "Sort order: 'HOT' (default), 'MOST_VOTES', or 'MOST_RECENT'"
                     ),
                 userInput: z
                     .string()
                     .optional()
                     .describe(
-                        "Search term to filter solutions by title, content, or author name. Case insensitive. Useful for finding specific approaches or algorithms mentioned in solutions."
+                        "Keyword filter on solution title, content, or author (case-insensitive)"
                     ),
                 tagSlugs: z
                     .array(z.string())
                     .optional()
                     .default([])
                     .describe(
-                        "Array of tag identifiers to filter solutions by programming languages (e.g., 'python', 'java') or problem algorithm/data-structure tags (e.g., 'dynamic-programming', 'recursion'). Only solutions tagged with at least one of the specified tags will be returned."
+                        "Filter by language or algorithm tags, e.g. ['python', 'dynamic-programming']"
                     )
             },
             async ({
@@ -106,12 +102,12 @@ export class SolutionToolRegistry extends ToolRegistry {
         // Solution article detail tool (Global-specific)
         this.server.tool(
             "get_problem_solution",
-            "Retrieves the complete content and metadata of a specific solution, including the full article text, author information, and related navigation links",
+            "Retrieves full content of a community solution article (read-only, no auth). Requires topicId from list_problem_solutions. Returns article text, author, and metadata as JSON. Use list_problem_solutions first to discover solutions and obtain topicId.",
             {
                 topicId: z
                     .string()
                     .describe(
-                        "The unique topic ID of the solution to retrieve. This ID can be obtained from the 'topicId' field in the response of the 'list_problem_solutions' tool. Format is typically a string of numbers and letters that uniquely identifies the solution in LeetCode's database."
+                        "Solution topicId from list_problem_solutions response"
                     )
             },
             async ({ topicId }) => {
@@ -153,27 +149,23 @@ export class SolutionToolRegistry extends ToolRegistry {
         // Problem solutions listing tool (CN-specific)
         this.server.tool(
             "list_problem_solutions",
-            "Retrieves a list of community solutions for a specific LeetCode problem, including only metadata like article slug. To view the full content of a solution, use the 'get_problem_solution' tool with the slug returned by this tool.",
+            "Lists community solution articles for a problem on LeetCode CN (read-only, no auth). Returns metadata only (slug)—not full content. Use get_problem_solution with the returned slug to read the full article.",
             {
                 questionSlug: z
                     .string()
                     .describe(
-                        "The URL slug/identifier of the problem to retrieve solutions for (e.g., 'two-sum', 'add-two-numbers'). This is the same string that appears in the LeetCode problem URL after '/problems/'"
+                        "Problem URL slug (e.g., 'two-sum')—same as in /problems/{slug}"
                     ),
                 limit: z
                     .number()
                     .min(1)
                     .optional()
                     .default(10)
-                    .describe(
-                        "Maximum number of solutions to return per request. Used for pagination and controlling response size. Default is 20 if not specified. Must be a positive integer. If not provided or set to a very large number, the system may still apply internal limits."
-                    ),
+                    .describe("Max solutions per page (default: 10)"),
                 skip: z
                     .number()
                     .optional()
-                    .describe(
-                        "Number of solutions to skip before starting to collect results. Used in conjunction with 'limit' for implementing pagination. Default is 0 if not specified. Must be a non-negative integer."
-                    ),
+                    .describe("Solutions to skip for pagination (default: 0)"),
                 orderBy: z
                     .enum([
                         "DEFAULT",
@@ -185,20 +177,20 @@ export class SolutionToolRegistry extends ToolRegistry {
                     .default("DEFAULT")
                     .optional()
                     .describe(
-                        "Sorting criteria for the returned solutions. 'DEFAULT' uses the default algorithm, 'MOST_UPVOTE' sorts by the number of upvotes (highest first), 'HOT' prioritizes trending solutions with recent engagement, 'NEWEST_TO_OLDEST' sorts by publication date (newest first), and 'OLDEST_TO_NEWEST' sorts by publication date (oldest first)."
+                        "Sort order: 'DEFAULT' (default), 'MOST_UPVOTE', 'HOT', 'NEWEST_TO_OLDEST', or 'OLDEST_TO_NEWEST'"
                     ),
                 userInput: z
                     .string()
                     .optional()
                     .describe(
-                        "Search term to filter solutions by title, content, or author name. Case insensitive. Useful for finding specific approaches or algorithms mentioned in solutions."
+                        "Keyword filter on solution title, content, or author (case-insensitive)"
                     ),
                 tagSlugs: z
                     .array(z.string())
                     .optional()
                     .default([])
                     .describe(
-                        "Array of tag identifiers to filter solutions by programming languages (e.g., 'python', 'java') or problem algorithm/data-structure approaches (e.g., 'dynamic-programming', 'recursion'). Only solutions tagged with at least one of the specified tags will be returned."
+                        "Filter by language or algorithm tags, e.g. ['python', 'dynamic-programming']"
                     )
             },
             async ({
@@ -254,12 +246,12 @@ export class SolutionToolRegistry extends ToolRegistry {
         // Solution article detail tool (CN-specific)
         this.server.tool(
             "get_problem_solution",
-            "Retrieves the complete content and metadata of a specific solution, including the full article text, author information, and related navigation links",
+            "Retrieves full content of a community solution article on LeetCode CN (read-only, no auth). Requires slug from list_problem_solutions (node.slug field). Returns article text, author, and metadata as JSON.",
             {
                 slug: z
                     .string()
                     .describe(
-                        "The unique slug/identifier of the solution to retrieve. This slug can be obtained from the 'node.slug' field in the response of the 'list_problem_solutions' tool. A URL-friendly slug string to identify solutions."
+                        "Solution slug from list_problem_solutions response (node.slug field)"
                     )
             },
             async ({ slug }) => {

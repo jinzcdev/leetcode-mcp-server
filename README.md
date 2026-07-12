@@ -1,20 +1,18 @@
 # LeetCode MCP Server
 
 [![NPM Version](https://img.shields.io/npm/v/@jinzcdev/leetcode-mcp-server.svg)](https://www.npmjs.com/package/@jinzcdev/leetcode-mcp-server)
+[![Chinese Doc](https://img.shields.io/badge/docs-中文-blue)](README_zh-CN.md)
 [![NPM Downloads](https://img.shields.io/npm/dm/@jinzcdev/leetcode-mcp-server.svg)](https://www.npmjs.com/package/@jinzcdev/leetcode-mcp-server)
 [![GitHub License](https://img.shields.io/github/license/jinzcdev/leetcode-mcp-server.svg)](./LICENSE)
-[![Chinese Doc](https://img.shields.io/badge/简体中文-查看-orange)](README_zh-CN.md)
+[![LeetCode MCP Server on Glama](https://glama.ai/mcp/servers/jinzcdev/leetcode-mcp-server/badges/score.svg)](https://glama.ai/mcp/servers/jinzcdev/leetcode-mcp-server)
 [![Stars](https://img.shields.io/github/stars/jinzcdev/leetcode-mcp-server)](https://github.com/jinzcdev/leetcode-mcp-server)
 
 The LeetCode MCP Server is a [Model Context Protocol (MCP)](https://modelcontextprotocol.io/introduction) server that provides seamless integration with LeetCode APIs, enabling advanced automation and intelligent interaction with LeetCode's programming problems, contests, solutions, and user data.
 
-<a href="https://glama.ai/mcp/servers/@jinzcdev/leetcode-mcp-server">
-  <img width="380" height="200" src="https://glama.ai/mcp/servers/@jinzcdev/leetcode-mcp-server/badge" alt="LeetCode Server MCP server" />
-</a>
-
 ## Features
 
 - 🌐 **Multi-site Support**: Support​ both leetcode.com (Global) and leetcode.cn (China) platforms
+- 🔌 **Dual Transport Modes**: Run as a stdio process (default) or as a [Streamable HTTP](https://modelcontextprotocol.io/docs/concepts/transports) server for web-based integrations
 - 📊 **Problem Data Retrieval**: Obtain detailed problem descriptions, constraints, examples, official editorials, and ​user-submitted solutions
 - 👤 **User Data Access**: Retrieve user profiles, submission history, and contest performance
 - 🔒 **​Private Data Access**: Create and query user notes, track problem-solving progress, and analyze submission details (AC/WA analysis)
@@ -28,25 +26,18 @@ The LeetCode MCP Server is a [Model Context Protocol (MCP)](https://modelcontext
 
 ## Installation
 
-### Installing via Smithery
-
-To install leetcode-mcp-server for Claude Desktop automatically via [Smithery](https://smithery.ai/server/@jinzcdev/leetcode-mcp-server):
-
-```bash
-npx -y @smithery/cli install @jinzcdev/leetcode-mcp-server --client claude
-```
-
-### Manual Installation
-
 ```bash
 # Install from npm
 npm install @jinzcdev/leetcode-mcp-server -g
 
-# Or run with Global site configuration
+# Run with Global site configuration (stdio transport, default)
 npx -y @jinzcdev/leetcode-mcp-server --site global
 
 # Run with authentication (for accessing private data)
 npx -y @jinzcdev/leetcode-mcp-server --site global --session <YOUR_LEETCODE_SESSION_COOKIE>
+
+# Run as a Streamable HTTP server
+npx -y @jinzcdev/leetcode-mcp-server --transport http --port 3000 --site global
 ```
 
 Alternatively, you can clone the repository and run it locally:
@@ -61,30 +52,48 @@ cd leetcode-mcp-server
 # Build the project
 npm install && npm run build
 
-# Run the server
+# Run the server (stdio transport)
 node build/index.js --site global
+
+# Or run as a Streamable HTTP server
+node build/index.js --transport http --port 3000 --site global
 ```
 
 ## Usage
 
-### Visual Studio Code Integration
+The server supports two transport modes:
 
-Add the following JSON configuration to your User Settings (JSON) file. Access this by pressing `Ctrl/Cmd + Shift + P` and searching for `Preferences: Open User Settings (JSON)`.
+| Transport         | Description                                                                                                                        |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `stdio` (default) | Standard input/output transport for local MCP clients                                                                              |
+| `http`            | [Streamable HTTP](https://modelcontextprotocol.io/docs/concepts/transports) transport for web-based integrations and remote access |
+
+### Command-Line Options
+
+| Option        | Alias | Default     | Description                                                      |
+| ------------- | ----- | ----------- | ---------------------------------------------------------------- |
+| `--site`      | `-s`  | `global`    | LeetCode API site: `global` (leetcode.com) or `cn` (leetcode.cn) |
+| `--session`   | `-c`  | —           | LeetCode session cookie for authenticated requests               |
+| `--transport` | `-t`  | `stdio`     | Transport mode: `stdio` or `http`                                |
+| `--port`      | —     | `3000`      | HTTP server port (Streamable HTTP only)                          |
+| `--host`      | —     | `127.0.0.1` | HTTP server host (Streamable HTTP only)                          |
+| `--endpoint`  | —     | `/mcp`      | HTTP endpoint path (Streamable HTTP only)                        |
+
+### MCP Client Configuration (stdio)
+
+Add the following server entry to your MCP client configuration file:
 
 #### Option 1: Using Environment Variables
 
 ```json
 {
-  "mcp": {
-    "servers": {
-      "leetcode": {
-        "type": "stdio",
-        "command": "npx",
-        "args": ["-y", "@jinzcdev/leetcode-mcp-server"],
-        "env": {
-          "LEETCODE_SITE": "global",
-          "LEETCODE_SESSION": "<YOUR_LEETCODE_SESSION_COOKIE>"
-        }
+  "mcpServers": {
+    "leetcode": {
+      "command": "npx",
+      "args": ["-y", "@jinzcdev/leetcode-mcp-server"],
+      "env": {
+        "LEETCODE_SITE": "global",
+        "LEETCODE_SESSION": "<YOUR_LEETCODE_SESSION_COOKIE>"
       }
     }
   }
@@ -95,20 +104,17 @@ Add the following JSON configuration to your User Settings (JSON) file. Access t
 
 ```json
 {
-  "mcp": {
-    "servers": {
-      "leetcode": {
-        "type": "stdio",
-        "command": "npx",
-        "args": [
-          "-y",
-          "@jinzcdev/leetcode-mcp-server",
-          "--site",
-          "global",
-          "--session",
-          "<YOUR_LEETCODE_SESSION_COOKIE>"
-        ]
-      }
+  "mcpServers": {
+    "leetcode": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@jinzcdev/leetcode-mcp-server",
+        "--site",
+        "global",
+        "--session",
+        "<YOUR_LEETCODE_SESSION_COOKIE>"
+      ]
     }
   }
 }
@@ -116,12 +122,51 @@ Add the following JSON configuration to your User Settings (JSON) file. Access t
 
 For LeetCode China site, modify the `--site` parameter to `cn`.
 
+> [!NOTE]
+>
+> The exact configuration file location and JSON structure may vary by MCP client. Some clients use an `mcp.servers` wrapper or a `type` field — refer to your client's documentation and adapt the example accordingly.
+
+### MCP Client Configuration (Streamable HTTP)
+
+First, start the server in HTTP mode:
+
+```bash
+npx -y @jinzcdev/leetcode-mcp-server --transport http --port 3000 --site global
+```
+
+Then connect your MCP client to the running server:
+
+```json
+{
+  "mcpServers": {
+    "leetcode": {
+      "type": "http",
+      "url": "http://127.0.0.1:3000/mcp"
+    }
+  }
+}
+```
+
+To use authenticated endpoints, pass the session cookie when starting the server:
+
+```bash
+npx -y @jinzcdev/leetcode-mcp-server --transport http --port 3000 --site global --session <YOUR_LEETCODE_SESSION_COOKIE>
+```
+
+> [!NOTE]
+
+> Some MCP clients use `"type": "http"` or `"type": "streamableHttp"` alongside the `url` field. Refer to your client's documentation for the exact HTTP transport configuration format.
+
 > [!TIP]
 >
 > The server supports the following optional environment variables:
 >
-> - `LEETCODE_SITE`: LeetCode API endpoint ('global' or 'cn', default: 'global')
+> - `LEETCODE_SITE`: LeetCode API endpoint (`global` or `cn`, default: `global`)
 > - `LEETCODE_SESSION`: LeetCode session cookie for authenticated API access (default: empty)
+> - `LEETCODE_TRANSPORT`: Transport mode (`stdio` or `http`, default: `stdio`)
+> - `LEETCODE_HTTP_PORT`: HTTP server port when using Streamable HTTP (default: `3000`)
+> - `LEETCODE_HTTP_HOST`: HTTP server host when using Streamable HTTP (default: `127.0.0.1`)
+> - `LEETCODE_HTTP_ENDPOINT`: HTTP endpoint path when using Streamable HTTP (default: `/mcp`)
 >
 > **Priority Note**:
 > Command-line arguments take precedence over environment variables when both are specified. For example:

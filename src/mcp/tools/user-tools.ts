@@ -13,12 +13,12 @@ export class UserToolRegistry extends ToolRegistry {
         // User profile tool
         this.server.tool(
             "get_user_profile",
-            "Retrieves profile information about a LeetCode user, including user stats, solved problems, and profile details",
+            "Retrieves any user's public profile by username (read-only, no auth). Returns ranking, avatar, bio, submission stats, and platform-specific progress. Use this to look up other users or public stats. Use get_user_status (requires auth) instead to verify the current session user's login state—not for looking up arbitrary users.",
             {
                 username: z
                     .string()
                     .describe(
-                        "LeetCode username to retrieve profile information for"
+                        "LeetCode username (case-sensitive). Public profile lookup; no authentication required."
                     )
             },
             async ({ username }) => {
@@ -43,19 +43,19 @@ export class UserToolRegistry extends ToolRegistry {
         // Recent submissions tool (Global-specific)
         this.server.tool(
             "get_recent_submissions",
-            "Retrieves a user's recent submissions on LeetCode Global, including both accepted and failed submissions with detailed metadata",
+            "Retrieves a user's recent submission history on LeetCode Global (read-only, no auth). Includes both accepted and failed submissions. Global only—not available on CN. Use get_recent_ac_submissions for accepted-only results, or get_all_submissions (auth, current user) for paginated full history with filters.",
             {
                 username: z
                     .string()
                     .describe(
-                        "LeetCode username to retrieve recent submissions for"
+                        "LeetCode username whose public recent submissions to fetch"
                     ),
                 limit: z
                     .number()
                     .optional()
                     .default(10)
                     .describe(
-                        "Maximum number of submissions to return (optional, defaults to server-defined limit)"
+                        "Max submissions to return (default: 10). Increase for more history within the recent window."
                     )
             },
             async ({ username, limit }) => {
@@ -95,20 +95,18 @@ export class UserToolRegistry extends ToolRegistry {
         // Recent accepted submissions tool (Global-specific)
         this.server.tool(
             "get_recent_ac_submissions",
-            "Retrieves a user's recent accepted (AC) submissions on LeetCode Global, focusing only on successfully completed problems",
+            "Retrieves a user's recent accepted (AC) submissions (read-only, no auth). Available on both Global and CN. Use get_recent_submissions (Global only) to include failed attempts, or get_all_submissions (auth, current user) for full paginated history.",
             {
                 username: z
                     .string()
                     .describe(
-                        "LeetCode username to retrieve recent accepted submissions for"
+                        "LeetCode username whose public recent AC submissions to fetch"
                     ),
                 limit: z
                     .number()
                     .optional()
                     .default(10)
-                    .describe(
-                        "Maximum number of accepted submissions to return (optional, defaults to server-defined limit)"
-                    )
+                    .describe("Max AC submissions to return (default: 10)")
             },
             async ({ username, limit }) => {
                 try {
@@ -149,20 +147,18 @@ export class UserToolRegistry extends ToolRegistry {
         // User recent AC submissions tool (CN-specific)
         this.server.tool(
             "get_recent_ac_submissions",
-            "Retrieves a user's recent accepted (AC) submissions on LeetCode China, with details about each successfully solved problem",
+            "Retrieves a user's recent accepted (AC) submissions on LeetCode CN (read-only, no auth). Use get_all_submissions (auth, current user) for full paginated history with lang/status filters.",
             {
                 username: z
                     .string()
                     .describe(
-                        "LeetCode China username to retrieve recent accepted submissions for"
+                        "LeetCode CN username whose public recent AC submissions to fetch"
                     ),
                 limit: z
                     .number()
                     .optional()
                     .default(10)
-                    .describe(
-                        "Maximum number of accepted submissions to return (optional, defaults to server-defined limit)"
-                    )
+                    .describe("Max AC submissions to return (default: 10)")
             },
             async ({ username, limit }) => {
                 try {
@@ -206,7 +202,7 @@ export class UserToolRegistry extends ToolRegistry {
         // User status tool (requires authentication)
         this.server.tool(
             "get_user_status",
-            "Retrieves the current user's status on LeetCode, including login status, premium membership details, and user information (requires authentication)",
+            "Checks the authenticated user's LeetCode login session (read-only, requires auth). Returns isSignedIn, username, avatar, and admin flag as JSON. Only available when credentials are configured. Use this to verify login state or identify the current user—not to look up other users (use get_user_profile for that). Errors return { error: message } if credentials are missing or invalid.",
             async () => {
                 try {
                     const status = await this.leetcodeService.fetchUserStatus();
@@ -236,12 +232,12 @@ export class UserToolRegistry extends ToolRegistry {
         // Submission detail tool (requires authentication)
         this.server.tool(
             "get_problem_submission_report",
-            "Retrieves detailed information about a specific LeetCode submission by its ID, including source code, runtime stats, and test results (requires authentication)",
+            "Retrieves full details for one submission by ID (read-only, requires auth). Returns source code, runtime, memory, and test results as JSON. Use when you have a submission ID from get_all_submissions or get_recent_submissions. Use get_all_submissions to browse/list submissions; do not use it when you only need one submission's code and results.",
             {
                 id: z
                     .number()
                     .describe(
-                        "The numerical submission ID to retrieve detailed information for"
+                        "Numeric submission ID (e.g., from get_all_submissions or get_recent_submissions response)"
                     )
             },
             async ({ id }) => {
@@ -277,31 +273,29 @@ export class UserToolRegistry extends ToolRegistry {
         // User progress questions tool (requires authentication)
         this.server.tool(
             "get_problem_progress",
-            "Retrieves the current user's problem-solving status with filtering options, including detailed solution history for attempted or solved questions (requires authentication)",
+            "Retrieves the authenticated user's per-problem solving progress (read-only, requires auth). Filter by ATTEMPTED/SOLVED status and difficulty; supports pagination. Use for tracking which problems the current user has tried or solved. Use get_all_submissions for individual submission records with code/runtime, or get_recent_ac_submissions for another user's public AC list.",
             {
                 offset: z
                     .number()
                     .default(0)
                     .describe(
-                        "The number of questions to skip for pagination purposes"
+                        "Pagination offset—number of questions to skip (default: 0)"
                     ),
                 limit: z
                     .number()
                     .default(100)
-                    .describe(
-                        "The maximum number of questions to return in a single request"
-                    ),
+                    .describe("Max questions per page (default: 100)"),
                 questionStatus: z
                     .enum(["ATTEMPTED", "SOLVED"])
                     .optional()
                     .describe(
-                        "Filter by question status: 'ATTEMPTED' for questions that have been tried but not necessarily solved, 'SOLVED' for questions that have been successfully completed"
+                        "'ATTEMPTED' = tried but not necessarily solved; 'SOLVED' = successfully completed. Omit to return all."
                     ),
                 difficulty: z
                     .array(z.string())
                     .optional()
                     .describe(
-                        "Filter by difficulty levels as an array (e.g., ['EASY', 'MEDIUM', 'HARD']); if not provided, questions of all difficulty levels will be returned"
+                        "Filter by difficulty, e.g. ['EASY', 'MEDIUM', 'HARD']. Omit for all levels."
                     )
             },
             async ({ offset, limit, questionStatus, difficulty }) => {
@@ -352,25 +346,23 @@ export class UserToolRegistry extends ToolRegistry {
         // Global user submissions tool (requires authentication)
         this.server.tool(
             "get_all_submissions",
-            "Retrieves a paginated list of the current user's submissions for a specific problem or all problems on LeetCode Global, with detailed submission metadata (requires authentication)",
+            "Retrieves paginated submission history for the authenticated user on LeetCode Global (read-only, requires auth). Optionally filter by problem slug. Use get_recent_submissions/get_recent_ac_submissions to view any user's public recent history. Use get_problem_submission_report when you have a specific submission ID and need source code and test results.",
             {
                 limit: z
                     .number()
                     .default(20)
-                    .describe(
-                        "Maximum number of submissions to return per page (typically defaults to 20 if not specified)"
-                    ),
+                    .describe("Submissions per page (default: 20)"),
                 offset: z
                     .number()
                     .default(0)
                     .describe(
-                        "Number of submissions to skip for pagination purposes"
+                        "Pagination offset—submissions to skip (default: 0)"
                     ),
                 questionSlug: z
                     .string()
                     .optional()
                     .describe(
-                        "Optional problem identifier (slug) to filter submissions for a specific problem (e.g., 'two-sum'); if omitted, returns submissions across all problems"
+                        "Filter by problem slug (e.g., 'two-sum'). Omit for all problems."
                     )
             },
             async ({ questionSlug, limit, offset }) => {
@@ -416,43 +408,41 @@ export class UserToolRegistry extends ToolRegistry {
         // China user submissions tool (requires authentication, enhanced version with more parameters)
         this.server.tool(
             "get_all_submissions",
-            "Retrieves a list of the current user's submissions on LeetCode China with extensive filtering options, including pagination support via lastKey parameter (requires authentication)",
+            "Retrieves paginated submission history for the authenticated user on LeetCode CN (read-only, requires auth). Supports filtering by problem slug, language, and AC/WA status; uses lastKey for cursor pagination. Use get_recent_ac_submissions for another user's public AC list. Use get_problem_submission_report for full details of a single submission by ID.",
             {
                 limit: z
                     .number()
                     .default(20)
-                    .describe(
-                        "Maximum number of submissions to return per page (typically defaults to 20 if not specified)"
-                    ),
+                    .describe("Submissions per page (default: 20)"),
                 offset: z
                     .number()
                     .default(0)
                     .describe(
-                        "Number of submissions to skip for pagination purposes"
+                        "Pagination offset—submissions to skip (default: 0)"
                     ),
                 questionSlug: z
                     .string()
                     .optional()
                     .describe(
-                        "Optional problem identifier (slug) to filter submissions for a specific problem (e.g., 'two-sum'); if omitted, returns submissions across all problems"
+                        "Filter by problem slug (e.g., 'two-sum'). Omit for all problems."
                     ),
                 lang: z
                     .enum(PROGRAMMING_LANGS as [string])
                     .optional()
                     .describe(
-                        "Programming language filter to show only submissions in a specific language (e.g., 'python3', 'java', 'cpp')"
+                        "Filter by language (e.g., 'python3', 'java', 'cpp'). Omit for all languages."
                     ),
                 status: z
                     .enum(["AC", "WA"])
                     .optional()
                     .describe(
-                        "Submission status filter (e.g., 'AC' for Accepted, 'WA' for Wrong Answer) to show only submissions with that status; if omitted, returns all submissions"
+                        "'AC' = accepted, 'WA' = wrong answer. Omit for all statuses."
                     ),
                 lastKey: z
                     .string()
                     .optional()
                     .describe(
-                        "Pagination token from a previous request used to retrieve the next page of results"
+                        "Cursor token from previous response's lastKey for next page"
                     )
             },
             async ({ questionSlug, limit, offset, lang, status, lastKey }) => {
