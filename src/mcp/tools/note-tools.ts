@@ -12,34 +12,30 @@ export class NoteToolRegistry extends ToolRegistry {
         // Notes search tool (CN-specific)
         this.server.tool(
             "search_notes",
-            "Searches for user notes on LeetCode with filtering options, returning note content and associated problem information (requires authentication)",
+            "Searches the authenticated user's personal notes across all problems (read-only, requires auth, CN only). Keyword search with pagination. Use get_note when you know the specific questionId; use this to find notes by keyword across problems.",
             {
                 keyword: z
                     .string()
                     .optional()
                     .describe(
-                        "Optional search term to filter notes by content or title"
+                        "Search term to filter notes by content or title. Omit to list all notes."
                     ),
                 limit: z
                     .number()
                     .optional()
                     .default(10)
-                    .describe(
-                        "Maximum number of notes to return per request (defaults to 10)"
-                    ),
+                    .describe("Max notes per page (default: 10)"),
                 skip: z
                     .number()
                     .optional()
                     .default(0)
-                    .describe(
-                        "Number of notes to skip before returning results (for pagination)"
-                    ),
+                    .describe("Notes to skip for pagination (default: 0)"),
                 orderBy: z
                     .enum(["ASCENDING", "DESCENDING"])
                     .optional()
                     .default("DESCENDING")
                     .describe(
-                        "Sort order for returned notes: 'DESCENDING' (newest first) or 'ASCENDING' (oldest first)"
+                        "'DESCENDING' = newest first (default); 'ASCENDING' = oldest first"
                     )
             },
             async ({ keyword, limit, skip, orderBy }) => {
@@ -90,27 +86,23 @@ export class NoteToolRegistry extends ToolRegistry {
         // Notes detail tool (CN-specific, requires authentication)
         this.server.tool(
             "get_note",
-            "Retrieves user notes for a specific LeetCode problem by its question ID, returning the complete note content and metadata (requires authentication)",
+            "Retrieves personal notes for a specific problem by questionId (read-only, requires auth, CN only). Use search_notes to find notes across problems by keyword when you don't know the questionId.",
             {
                 questionId: z
                     .string()
                     .describe(
-                        "The question ID of the LeetCode problem to get notes for (e.g., '42' for 'Trapping Rain Water')"
+                        "Numeric problem ID (e.g., '42' for Trapping Rain Water)—not the titleSlug"
                     ),
                 limit: z
                     .number()
                     .optional()
                     .default(10)
-                    .describe(
-                        "Maximum number of notes to return per request (defaults to 10)"
-                    ),
+                    .describe("Max notes per page (default: 10)"),
                 skip: z
                     .number()
                     .optional()
                     .default(0)
-                    .describe(
-                        "Number of notes to skip before returning results (for pagination)"
-                    )
+                    .describe("Notes to skip for pagination (default: 0)")
             },
             async ({ questionId, limit = 20, skip = 0 }) => {
                 try {
@@ -153,23 +145,19 @@ export class NoteToolRegistry extends ToolRegistry {
         // Note creation tool (CN-specific, requires authentication)
         this.server.tool(
             "create_note",
-            "Creates a new note for a specific LeetCode problem, allowing users to save personal comments and observations for future reference (requires authentication, CN only)",
+            "Creates a new personal note for a problem (write operation, requires auth, CN only). Supports markdown content. Returns { success, note } as JSON. Use update_note to modify an existing note by noteId.",
             {
                 questionId: z
                     .string()
                     .describe(
-                        "The question ID of the LeetCode problem to create a note for (e.g., '42' for 'Trapping Rain Water')"
+                        "Numeric problem ID (e.g., '42')—not the titleSlug"
                     ),
-                content: z
-                    .string()
-                    .describe(
-                        "The content of the note (supports markdown format)"
-                    ),
+                content: z.string().describe("Note body (markdown supported)"),
                 title: z
                     .string()
                     .optional()
                     .default("")
-                    .describe("An short title or summary for the note")
+                    .describe("Optional short title or summary")
             },
             async ({ questionId, content, title = "" }) => {
                 try {
@@ -210,19 +198,19 @@ export class NoteToolRegistry extends ToolRegistry {
         // Note update tool (CN-specific, requires authentication)
         this.server.tool(
             "update_note",
-            "Updates an existing note with new content or title, allowing users to refine their saved observations (requires authentication, CN only)",
+            "Updates an existing personal note by noteId (write operation, requires auth, CN only). Use create_note for new notes; use get_note or search_notes first to find the noteId.",
             {
-                noteId: z.string().describe("The ID of the note to update"),
+                noteId: z
+                    .string()
+                    .describe("Note ID from get_note or search_notes response"),
                 content: z
                     .string()
                     .default("")
-                    .describe(
-                        "The new content for the note (supports markdown format)"
-                    ),
+                    .describe("New note body (markdown supported)"),
                 title: z
                     .string()
                     .default("")
-                    .describe("An new short title or summary for the note")
+                    .describe("New short title or summary")
             },
             async ({ noteId, content, title = "" }) => {
                 try {

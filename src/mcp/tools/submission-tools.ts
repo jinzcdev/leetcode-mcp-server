@@ -8,26 +8,24 @@ export class SubmissionToolRegistry extends ToolRegistry {
     protected registerAuthenticatedCommon(): void {
         this.server.tool(
             "run_code",
-            "Runs code for a LeetCode problem (requires authentication). Starts an interpret request then polls the /check/ endpoint until finished, returning both the start response and final check JSON.",
+            "Runs code against test cases without submitting (side effect: creates interpret request on LeetCode, requires auth). Polls /check/ until finished; returns start response and final check JSON. Supports custom input via dataInput. Use submit_solution for official judging; use run_code for testing/debugging only.",
             {
                 titleSlug: z
                     .string()
                     .min(1)
-                    .describe(
-                        "The URL slug/identifier of the problem (e.g., 'two-sum')"
-                    ),
+                    .describe("Problem URL slug (e.g., 'two-sum')"),
                 lang: z
                     .enum(PROGRAMMING_LANGS as [string])
-                    .describe("Programming language (e.g., 'python3', 'cpp')"),
+                    .describe("Language slug (e.g., 'python3', 'cpp', 'java')"),
                 typedCode: z
                     .string()
                     .min(1)
-                    .describe("Source code to run (will not be logged)"),
+                    .describe("Source code to run (not logged by this server)"),
                 dataInput: z
                     .string()
                     .optional()
                     .describe(
-                        "Custom test input for run (optional). If omitted, LeetCode may use default test cases."
+                        "Custom test input. Omit to use LeetCode default test cases."
                     ),
                 timeoutMs: z
                     .number()
@@ -35,18 +33,14 @@ export class SubmissionToolRegistry extends ToolRegistry {
                     .positive()
                     .optional()
                     .default(120000)
-                    .describe(
-                        "Polling timeout in milliseconds (optional, default: 120000)"
-                    ),
+                    .describe("Max wait for result in ms (default: 120000)"),
                 pollIntervalMs: z
                     .number()
                     .int()
                     .positive()
                     .optional()
                     .default(1500)
-                    .describe(
-                        "Polling interval in milliseconds (optional, default: 1500)"
-                    )
+                    .describe("Polling interval in ms (default: 1500)")
             },
             async ({
                 titleSlug,
@@ -111,39 +105,35 @@ export class SubmissionToolRegistry extends ToolRegistry {
 
         this.server.tool(
             "submit_solution",
-            "Submits code for a LeetCode problem (requires authentication). Starts a submission then polls the /check/ endpoint until finished, returning both the start response and final check JSON.",
+            "Submits code for official judging (side effect: creates submission on LeetCode, requires auth). Polls /check/ until finished; returns start response and final check JSON. Counts toward submission history. Use run_code for dry-run testing with optional custom input; use submit_solution when ready for final judging.",
             {
                 titleSlug: z
                     .string()
                     .min(1)
-                    .describe(
-                        "The URL slug/identifier of the problem (e.g., 'two-sum')"
-                    ),
+                    .describe("Problem URL slug (e.g., 'two-sum')"),
                 lang: z
                     .enum(PROGRAMMING_LANGS as [string])
-                    .describe("Programming language (e.g., 'python3', 'cpp')"),
+                    .describe("Language slug (e.g., 'python3', 'cpp', 'java')"),
                 typedCode: z
                     .string()
                     .min(1)
-                    .describe("Source code to submit (will not be logged)"),
+                    .describe(
+                        "Source code to submit (not logged by this server)"
+                    ),
                 timeoutMs: z
                     .number()
                     .int()
                     .positive()
                     .optional()
                     .default(120000)
-                    .describe(
-                        "Polling timeout in milliseconds (optional, default: 120000)"
-                    ),
+                    .describe("Max wait for result in ms (default: 120000)"),
                 pollIntervalMs: z
                     .number()
                     .int()
                     .positive()
                     .optional()
                     .default(1500)
-                    .describe(
-                        "Polling interval in milliseconds (optional, default: 1500)"
-                    )
+                    .describe("Polling interval in ms (default: 1500)")
             },
             async ({
                 titleSlug,

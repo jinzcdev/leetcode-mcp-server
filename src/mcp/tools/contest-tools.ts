@@ -12,19 +12,19 @@ export class ContestToolRegistry extends ToolRegistry {
         // User contest ranking tool
         this.server.tool(
             "get_user_contest_ranking",
-            "Retrieves a user's contest ranking information on LeetCode, including overall ranking, participation history, and performance metrics across contests",
+            "Retrieves a user's contest ranking and participation history (read-only, no auth). Returns overall rating, ranking, and per-contest performance as JSON. Use get_user_profile for general stats and ranking; use this specifically for contest performance data.",
             {
                 username: z
                     .string()
                     .describe(
-                        "LeetCode username to retrieve contest ranking information for"
+                        "LeetCode username whose contest ranking to fetch"
                     ),
                 attended: z
                     .boolean()
                     .optional()
                     .default(true)
                     .describe(
-                        "Whether to include only the contests the user has participated in (true) or all contests (false); defaults to true"
+                        "true = only contests the user attended (default); false = include all contests in history"
                     )
             },
             async ({ username, attended = true }) => {

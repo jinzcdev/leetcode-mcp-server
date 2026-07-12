@@ -18,7 +18,9 @@
         "start": "node build/index.js",
         "dev": "tsc-watch --onSuccess \"node build/index.js\"",
         "format": "prettier --write .",
-        "prepare": "husky"
+        "prepare": "husky",
+        "lint": "eslint .",
+        "lint:fix": "eslint . --fix"
     },
     "bin": {
         "leetcode-mcp-server": "build/index.js"
