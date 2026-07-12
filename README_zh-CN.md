@@ -1,20 +1,18 @@
 # LeetCode MCP 服务器
 
 [![NPM Version](https://img.shields.io/npm/v/@jinzcdev/leetcode-mcp-server.svg)](https://www.npmjs.com/package/@jinzcdev/leetcode-mcp-server)
+[![English Doc](https://img.shields.io/badge/docs-English-blue)](README.md)
 [![NPM Downloads](https://img.shields.io/npm/dm/@jinzcdev/leetcode-mcp-server.svg)](https://www.npmjs.com/package/@jinzcdev/leetcode-mcp-server)
 [![GitHub License](https://img.shields.io/github/license/jinzcdev/leetcode-mcp-server.svg)](./LICENSE)
-[![English Doc](https://img.shields.io/badge/English-View-orange)](README.md)
+[![LeetCode MCP Server on Glama](https://glama.ai/mcp/servers/jinzcdev/leetcode-mcp-server/badges/score.svg)](https://glama.ai/mcp/servers/jinzcdev/leetcode-mcp-server)
 [![Stars](https://img.shields.io/github/stars/jinzcdev/leetcode-mcp-server)](https://github.com/jinzcdev/leetcode-mcp-server)
 
 LeetCode MCP Server 是一个基于 [模型上下文协议 (MCP)](https://modelcontextprotocol.io/introduction) 的服务，提供与 LeetCode API 的无缝集成，实现与 LeetCode 编程题目、竞赛、题解和用户数据的高级自动化和智能交互。
 
-<a href="https://glama.ai/mcp/servers/@jinzcdev/leetcode-mcp-server">
-  <img width="380" height="200" src="https://glama.ai/mcp/servers/@jinzcdev/leetcode-mcp-server/badge" alt="LeetCode Server MCP server" />
-</a>
-
 ## 特性
 
 - 🌐 **多站点支持**：同时支持 leetcode.com（全球）和 leetcode.cn（中国）站点
+- 🔌 **双传输模式**：默认以 stdio 进程运行，或以 [Streamable HTTP](https://modelcontextprotocol.io/docs/concepts/transports) 服务器模式运行，适用于 Web 集成场景
 - 📊 ​**题目数据获取**：获取详细的题目描述、约束条件、示例、官方题解和用户提交的解答
 - 👤 **用户数据访问**：检索用户资料、提交历史和竞赛表现
 - 🔒 **私有数据访问**：创建和查询用户笔记，跟踪题目解答进度，分析提交详情（AC/WA 报告）
@@ -28,25 +26,18 @@ LeetCode MCP Server 是一个基于 [模型上下文协议 (MCP)](https://modelc
 
 ## 安装
 
-### 通过 Smithery 安装
-
-使用 [Smithery](https://smithery.ai/server/@jinzcdev/leetcode-mcp-server) 为 Claude Desktop 自动安装 leetcode-mcp-server：
-
-```bash
-npx -y @smithery/cli install @jinzcdev/leetcode-mcp-server --client claude
-```
-
-### 手动安装
-
 ```bash
 # 从 npm 安装
 npm install @jinzcdev/leetcode-mcp-server -g
 
-# 使用中国站点配置运行
+# 使用中国站点配置运行（stdio 传输，默认）
 npx -y @jinzcdev/leetcode-mcp-server --site cn
 
 # 使用认证运行（访问私有数据）
 npx -y @jinzcdev/leetcode-mcp-server --site cn --session <您的 LEETCODE 会话 COOKIE>
+
+# 以 Streamable HTTP 服务器模式运行
+npx -y @jinzcdev/leetcode-mcp-server --transport http --port 3000 --site cn
 ```
 
 或者，您可以克隆仓库并在本地运行：
@@ -61,30 +52,48 @@ cd leetcode-mcp-server
 # 构建项目
 npm install && npm run build
 
-# 运行服务器
+# 运行服务器（stdio 传输）
 node build/index.js --site cn
+
+# 或以 Streamable HTTP 服务器模式运行
+node build/index.js --transport http --port 3000 --site cn
 ```
 
 ## 使用方法
 
-### Visual Studio Code 集成
+服务器支持两种传输模式：
 
-在您的用户设置 (JSON) 文件中添加以下配置。通过按 `Ctrl/Cmd + Shift + P` 并搜索 `Preferences: Open User Settings (JSON)` 来访问此文件。
+| 传输模式        | 说明                                                                                                        |
+| --------------- | ----------------------------------------------------------------------------------------------------------- |
+| `stdio`（默认） | 标准输入/输出传输，适用于本地 MCP 客户端                                                                    |
+| `http`          | [Streamable HTTP](https://modelcontextprotocol.io/docs/concepts/transports) 传输，适用于 Web 集成和远程访问 |
+
+### 命令行参数
+
+| 参数          | 别名 | 默认值      | 说明                                                              |
+| ------------- | ---- | ----------- | ----------------------------------------------------------------- |
+| `--site`      | `-s` | `global`    | LeetCode API 站点：`global`（leetcode.com）或 `cn`（leetcode.cn） |
+| `--session`   | `-c` | —           | LeetCode 会话 cookie，用于授权访问                                |
+| `--transport` | `-t` | `stdio`     | 传输模式：`stdio` 或 `http`                                       |
+| `--port`      | —    | `3000`      | HTTP 服务端口（仅 Streamable HTTP）                               |
+| `--host`      | —    | `127.0.0.1` | HTTP 服务主机（仅 Streamable HTTP）                               |
+| `--endpoint`  | —    | `/mcp`      | HTTP 端点路径（仅 Streamable HTTP）                               |
+
+### MCP 客户端配置（stdio）
+
+将以下服务器配置添加到 MCP 客户端的配置文件中：
 
 #### 方式一：使用环境变量
 
 ```json
 {
-  "mcp": {
-    "servers": {
-      "leetcode": {
-        "type": "stdio",
-        "command": "npx",
-        "args": ["-y", "@jinzcdev/leetcode-mcp-server"],
-        "env": {
-          "LEETCODE_SITE": "cn",
-          "LEETCODE_SESSION": "<您的 LEETCODE 会话 COOKIE>"
-        }
+  "mcpServers": {
+    "leetcode": {
+      "command": "npx",
+      "args": ["-y", "@jinzcdev/leetcode-mcp-server"],
+      "env": {
+        "LEETCODE_SITE": "cn",
+        "LEETCODE_SESSION": "<您的 LEETCODE 会话 COOKIE>"
       }
     }
   }
@@ -95,20 +104,17 @@ node build/index.js --site cn
 
 ```json
 {
-  "mcp": {
-    "servers": {
-      "leetcode": {
-        "type": "stdio",
-        "command": "npx",
-        "args": [
-          "-y",
-          "@jinzcdev/leetcode-mcp-server",
-          "--site",
-          "cn",
-          "--session",
-          "<您的 LEETCODE 会话 COOKIE>"
-        ]
-      }
+  "mcpServers": {
+    "leetcode": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@jinzcdev/leetcode-mcp-server",
+        "--site",
+        "cn",
+        "--session",
+        "<您的 LEETCODE 会话 COOKIE>"
+      ]
     }
   }
 }
@@ -116,12 +122,51 @@ node build/index.js --site cn
 
 对于 LeetCode 全球站点，请将 `--site` 参数修改为 `global`。
 
+> [!NOTE]
+>
+> 不同 MCP 客户端的配置文件位置和 JSON 结构可能有所不同。部分客户端使用 `mcp.servers` 包装层或 `type` 字段，请参考所使用客户端的文档并据此调整示例。
+
+### MCP 客户端配置（Streamable HTTP）
+
+首先以 HTTP 模式启动服务器：
+
+```bash
+npx -y @jinzcdev/leetcode-mcp-server --transport http --port 3000 --site cn
+```
+
+然后在 MCP 客户端中连接到该服务器：
+
+```json
+{
+  "mcpServers": {
+    "leetcode": {
+      "type": "http",
+      "url": "http://127.0.0.1:3000/mcp"
+    }
+  }
+}
+```
+
+如需访问需要认证的接口，启动服务器时传入会话 cookie：
+
+```bash
+npx -y @jinzcdev/leetcode-mcp-server --transport http --port 3000 --site cn --session <您的 LEETCODE 会话 COOKIE>
+```
+
+> [!NOTE]
+
+> 部分 MCP 客户端需要在 `url` 字段之外额外指定 `"type": "http"` 或 `"type": "streamableHttp"`，请参考所使用客户端的文档以确认 HTTP 传输的配置格式。
+
 > [!TIP]
 >
 > 服务支持以下可选的环境变量：
 >
-> - `LEETCODE_SITE`：LeetCode API 端点（'global' 或 'cn'，默认为 'global'）
+> - `LEETCODE_SITE`：LeetCode API 端点（`global` 或 `cn`，默认为 `global`）
 > - `LEETCODE_SESSION`：用于授权 API 访问的 LeetCode 会话 cookie（默认为空）
+> - `LEETCODE_TRANSPORT`：传输模式（`stdio` 或 `http`，默认为 `stdio`）
+> - `LEETCODE_HTTP_PORT`：Streamable HTTP 服务端口（默认为 `3000`）
+> - `LEETCODE_HTTP_HOST`：Streamable HTTP 服务主机（默认为 `127.0.0.1`）
+> - `LEETCODE_HTTP_ENDPOINT`：Streamable HTTP 端点路径（默认为 `/mcp`）
 >
 > **优先级说明**：
 >
