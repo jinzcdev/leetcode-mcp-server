@@ -154,7 +154,6 @@ npx -y @jinzcdev/leetcode-mcp-server --transport http --port 3000 --site cn --se
 ```
 
 > [!NOTE]
-
 > 部分 MCP 客户端需要在 `url` 字段之外额外指定 `"type": "http"` 或 `"type": "streamableHttp"`，请参考所使用客户端的文档以确认 HTTP 传输的配置格式。
 
 > [!TIP]

@@ -154,7 +154,6 @@ npx -y @jinzcdev/leetcode-mcp-server --transport http --port 3000 --site global 
 ```
 
 > [!NOTE]
-
 > Some MCP clients use `"type": "http"` or `"type": "streamableHttp"` alongside the `url` field. Refer to your client's documentation for the exact HTTP transport configuration format.
 
 > [!TIP]
