@@ -15,7 +15,7 @@ The LeetCode MCP Server is a [Model Context Protocol (MCP)](https://modelcontext
 - 🔌 **Dual Transport Modes**: Run as a stdio process (default) or as a [Streamable HTTP](https://modelcontextprotocol.io/docs/concepts/transports) server for web-based integrations
 - 📊 **Problem Data Retrieval**: Obtain detailed problem descriptions, constraints, examples, official editorials, and ​user-submitted solutions
 - 👤 **User Data Access**: Retrieve user profiles, submission history, and contest performance
-- 🔒 **​Private Data Access**: Create and query user notes, track problem-solving progress, and analyze submission details (AC/WA analysis)
+- 🔒 **​Private Data Access**: Create and query user notes, manage problem lists, track problem-solving progress, and analyze submission details (AC/WA analysis)
 - 🔍 **Advanced Search Capabilities**: Filter problems by tags, difficulty levels, categories, and keywords
 - 📅 **Daily Challenge Access**: Easily access daily challenge problems
 
@@ -212,6 +212,18 @@ npx -y @jinzcdev/leetcode-mcp-server --transport http --port 3000 --site global 
 | **create_note**  |   ❌   | ✅  |      ✅       | Creates a new note for a specific problem             |
 | **update_note**  |   ❌   | ✅  |      ✅       | Updates an existing note with new content             |
 
+### Problem Lists
+
+| Tool                          | Global | CN  | Auth Required | Description                                                  |
+| ----------------------------- | :----: | :-: | :-----------: | ------------------------------------------------------------ |
+| **list_problem_lists**        |   ✅   | ✅  |      ✅       | Lists the current user's problem lists (favorites)           |
+| **get_problem_list**          |   ✅   | ✅  |      ✅       | Retrieves a problem list's metadata and its questions        |
+| **create_problem_list**       |   ✅   | ✅  |      ✅       | Creates a new problem list, optionally with initial problems |
+| **update_problem_list**       |   ✅   | ✅  |      ✅       | Renames a problem list, edits its description or visibility  |
+| **add_problems_to_list**      |   ✅   | ✅  |      ✅       | Adds problems to a problem list by slug or problem number    |
+| **remove_problems_from_list** |   ✅   | ✅  |      ✅       | Removes problems from a problem list                         |
+| **reorder_problem_list**      |   ✅   | ✅  |      ✅       | Reorders the problems inside a problem list                  |
+
 ### Solutions
 
 | Tool                       | Global | CN  | Auth Required | Description                                                    |
@@ -325,6 +337,55 @@ npx -y @jinzcdev/leetcode-mcp-server --transport http --port 3000 --site global 
   - `noteId`: The ID of the note to update (string, required)
   - `content`: The new content for the note, supports markdown format (string, required)
   - `summary`: An optional new short summary or title for the note (string, optional)
+
+### Problem Lists
+
+Problem lists are identified by their `favoriteSlug`, the path segment after `/problem-list/` in the list URL.
+
+- **list_problem_lists** - Lists the current user's problem lists
+
+  - `includeCollected`: Also return lists saved from other creators (boolean, optional, default: false)
+
+- **get_problem_list** - Retrieves a problem list's metadata and a page of its questions
+
+  - `favoriteSlug`: The slug of the problem list (string, required)
+  - `limit`: Maximum number of questions to return (number, optional, default: 50)
+  - `skip`: Number of questions to skip (number, optional, default: 0)
+  - `searchKeyword`: Keyword to filter questions by title (string, optional)
+  - `sortField`: Sort field: `CUSTOM` (the order shown on the website), `FRONTEND_ID`, `DIFFICULTY`, `AC_RATE`, `FREQUENCY` or `CONTEST_POINT` (string, optional, default: `CUSTOM`)
+  - `sortOrder`: `ASCENDING` or `DESCENDING` (string, optional, default: `ASCENDING`)
+
+- **create_problem_list** - Creates a new problem list
+
+  - `name`: Display name of the list (string, required)
+  - `description`: Description of the list (string, optional, default: "")
+  - `isPublic`: Whether the list is publicly visible (boolean, optional, default: false)
+  - `questionSlugs`: Problem slugs to add right after creation (string[], optional)
+  - `questionIds`: Problem numbers to add right after creation, e.g. `[1, 1143]`; numbers that cannot be resolved are returned in `unresolved` ((string | number)[], optional)
+
+- **update_problem_list** - Renames a problem list, changes its description or toggles its visibility (at least one optional field is required)
+
+  - `favoriteSlug`: The slug of the problem list (string, required)
+  - `name`: New display name (string, optional)
+  - `description`: New description (string, optional)
+  - `isPublic`: New visibility (boolean, optional)
+
+- **add_problems_to_list** - Adds problems to a problem list (at least one of `questionSlugs` / `questionIds` is required; problems are appended in the given order, slugs first)
+
+  - `favoriteSlug`: The slug of the problem list (string, required)
+  - `questionSlugs`: Problem slugs to add, e.g. `["two-sum"]` (string[], optional)
+  - `questionIds`: Problem numbers to add, e.g. `[1, 1143]` or `["LCP 82"]`; numbers that cannot be resolved are returned in `unresolved` ((string | number)[], optional)
+
+- **remove_problems_from_list** - Removes problems from a problem list
+
+  - `favoriteSlug`: The slug of the problem list (string, required)
+  - `questionSlugs`: Problem slugs to remove (string[], required)
+
+- **reorder_problem_list** - Reorders the problems inside a problem list (exactly one of `sortField` / `questionSlugs` is required; one problem is moved per request)
+  - `favoriteSlug`: The slug of the problem list (string, required)
+  - `sortField`: Sort the whole list by `FRONTEND_ID`, `DIFFICULTY`, `AC_RATE`, `FREQUENCY` or `CONTEST_POINT` (string, optional)
+  - `sortOrder`: `ASCENDING` or `DESCENDING` (string, optional, default: `ASCENDING`)
+  - `questionSlugs`: Problem slugs to move to the top, in this order; the remaining problems keep their relative order (string[], optional)
 
 ### Solutions
 

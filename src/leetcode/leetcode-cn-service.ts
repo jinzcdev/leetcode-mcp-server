@@ -8,6 +8,8 @@ import {
     postJson
 } from "../utils/leetcode-http.js";
 import logger from "../utils/logger.js";
+import * as favoriteApi from "./favorite-api.js";
+import { GraphQLRequest } from "./favorite-api.js";
 import {
     NOTE_AGGREGATE_QUERY,
     NOTE_BY_QUESTION_ID_QUERY,
@@ -18,6 +20,7 @@ import { SEARCH_PROBLEMS_QUERY } from "./graphql/cn/search-problems.js";
 import { SOLUTION_ARTICLE_DETAIL_QUERY } from "./graphql/cn/solution-article-detail.js";
 import { SOLUTION_ARTICLES_QUERY } from "./graphql/cn/solution-articles.js";
 import { LeetCodeBaseService } from "./leetcode-base-service.js";
+import * as questionLookupApi from "./question-lookup-api.js";
 
 /**
  * LeetCode CN API Service Implementation
@@ -641,6 +644,130 @@ export class LeetCodeCNService implements LeetCodeBaseService {
         });
 
         return { start, checkUrl, check };
+    }
+
+    /**
+     * Executes a raw GraphQL request with the client's session credentials.
+     * Used by the shared problem list (favorites) operations.
+     */
+    private readonly executeGraphQL = (request: GraphQLRequest): Promise<any> =>
+        this.leetCodeApi.graphql(request);
+
+    private requireAuthentication(action: string): void {
+        if (!this.isAuthenticated()) {
+            throw new Error(`Authentication required to ${action}`);
+        }
+    }
+
+    async fetchMyFavoriteLists(options?: {
+        includeCollected?: boolean;
+    }): Promise<any> {
+        this.requireAuthentication("fetch problem lists");
+        return await favoriteApi.fetchMyFavoriteLists(
+            this.executeGraphQL,
+            options
+        );
+    }
+
+    async fetchFavoriteDetail(favoriteSlug: string): Promise<any> {
+        this.requireAuthentication("fetch problem list details");
+        return await favoriteApi.fetchFavoriteDetail(
+            this.executeGraphQL,
+            favoriteSlug
+        );
+    }
+
+    async fetchFavoriteQuestions(
+        favoriteSlug: string,
+        options?: favoriteApi.FetchFavoriteQuestionsOptions
+    ): Promise<any> {
+        this.requireAuthentication("fetch problem list questions");
+        return await favoriteApi.fetchFavoriteQuestions(
+            this.executeGraphQL,
+            favoriteSlug,
+            options
+        );
+    }
+
+    async resolveQuestionsByFrontendId(
+        questionIds: Array<string | number>
+    ): Promise<any> {
+        this.requireAuthentication("look up problems by number");
+        return await questionLookupApi.resolveQuestionsByFrontendId(
+            this.executeGraphQL,
+            questionIds
+        );
+    }
+
+    async reorderFavoriteQuestions(
+        favoriteSlug: string,
+        options: favoriteApi.ReorderFavoriteQuestionsOptions
+    ): Promise<any> {
+        this.requireAuthentication("reorder problem lists");
+        return await favoriteApi.reorderFavoriteQuestions(
+            this.executeGraphQL,
+            favoriteSlug,
+            options
+        );
+    }
+
+    async createFavorite(options: {
+        name: string;
+        description?: string;
+        isPublic?: boolean;
+    }): Promise<any> {
+        this.requireAuthentication("create problem lists");
+        return await favoriteApi.createFavorite(this.executeGraphQL, options);
+    }
+
+    async updateFavoriteNameDescription(
+        favoriteSlug: string,
+        name: string,
+        description?: string
+    ): Promise<any> {
+        this.requireAuthentication("update problem lists");
+        return await favoriteApi.updateFavoriteNameDescription(
+            this.executeGraphQL,
+            favoriteSlug,
+            name,
+            description
+        );
+    }
+
+    async updateFavoriteIsPublic(
+        favoriteSlug: string,
+        isPublic: boolean
+    ): Promise<any> {
+        this.requireAuthentication("update problem lists");
+        return await favoriteApi.updateFavoriteIsPublic(
+            this.executeGraphQL,
+            favoriteSlug,
+            isPublic
+        );
+    }
+
+    async addQuestionsToFavorite(
+        favoriteSlug: string,
+        questionSlugs: string[]
+    ): Promise<any> {
+        this.requireAuthentication("add questions to problem lists");
+        return await favoriteApi.addQuestionsToFavorite(
+            this.executeGraphQL,
+            favoriteSlug,
+            questionSlugs
+        );
+    }
+
+    async removeQuestionsFromFavorite(
+        favoriteSlug: string,
+        questionSlugs: string[]
+    ): Promise<any> {
+        this.requireAuthentication("remove questions from problem lists");
+        return await favoriteApi.removeQuestionsFromFavorite(
+            this.executeGraphQL,
+            favoriteSlug,
+            questionSlugs
+        );
     }
 
     isAuthenticated(): boolean {

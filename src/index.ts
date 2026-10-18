@@ -10,6 +10,7 @@ import { LeetCodeServiceFactory } from "./leetcode/leetcode-service-factory.js";
 import { registerProblemResources } from "./mcp/resources/problem-resources.js";
 import { registerSolutionResources } from "./mcp/resources/solution-resources.js";
 import { registerContestTools } from "./mcp/tools/contest-tools.js";
+import { registerFavoriteTools } from "./mcp/tools/favorite-tools.js";
 import { registerNoteTools } from "./mcp/tools/note-tools.js";
 import { registerProblemTools } from "./mcp/tools/problem-tools.js";
 import { registerSolutionTools } from "./mcp/tools/solution-tools.js";
@@ -133,6 +134,7 @@ function createMcpServer(leetcodeService: LeetCodeBaseService): McpServer {
     registerContestTools(server, leetcodeService);
     registerSolutionTools(server, leetcodeService);
     registerNoteTools(server, leetcodeService);
+    registerFavoriteTools(server, leetcodeService);
     registerSubmissionTools(server, leetcodeService);
 
     registerProblemResources(server, leetcodeService);

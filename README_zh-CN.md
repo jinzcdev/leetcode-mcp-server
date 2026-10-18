@@ -15,7 +15,7 @@ LeetCode MCP Server 是一个基于 [模型上下文协议 (MCP)](https://modelc
 - 🔌 **双传输模式**：默认以 stdio 进程运行，或以 [Streamable HTTP](https://modelcontextprotocol.io/docs/concepts/transports) 服务器模式运行，适用于 Web 集成场景
 - 📊 ​**题目数据获取**：获取详细的题目描述、约束条件、示例、官方题解和用户提交的解答
 - 👤 **用户数据访问**：检索用户资料、提交历史和竞赛表现
-- 🔒 **私有数据访问**：创建和查询用户笔记，跟踪题目解答进度，分析提交详情（AC/WA 报告）
+- 🔒 **私有数据访问**：创建和查询用户笔记，管理题单，跟踪题目解答进度，分析提交详情（AC/WA 报告）
 - 🔍 **高级搜索功能**：按标签、难度级别、分类和关键字筛选题目
 - 📅 **每日一题获取**：轻松访问每日一题
 
@@ -213,6 +213,18 @@ npx -y @jinzcdev/leetcode-mcp-server --transport http --port 3000 --site cn --se
 | **create_note**  |   ❌   |   ✅   |    ✅    | 为特定题目创建新笔记           |
 | **update_note**  |   ❌   |   ✅   |    ✅    | 使用新内容更新现有笔记         |
 
+### 题单
+
+| 工具                          | 全球站 | 中国站 | 需要认证 | 描述                             |
+| ----------------------------- | :----: | :----: | :------: | -------------------------------- |
+| **list_problem_lists**        |   ✅   |   ✅   |    ✅    | 获取当前用户的题单（收藏夹）列表 |
+| **get_problem_list**          |   ✅   |   ✅   |    ✅    | 获取题单的基本信息及其中的题目   |
+| **create_problem_list**       |   ✅   |   ✅   |    ✅    | 创建新题单，可同时加入初始题目   |
+| **update_problem_list**       |   ✅   |   ✅   |    ✅    | 重命名题单、修改描述或公开状态   |
+| **add_problems_to_list**      |   ✅   |   ✅   |    ✅    | 按 slug 或题号向题单中添加题目   |
+| **remove_problems_from_list** |   ✅   |   ✅   |    ✅    | 从题单中移除题目                 |
+| **reorder_problem_list**      |   ✅   |   ✅   |    ✅    | 调整题单内题目的顺序             |
+
 ### 题解
 
 | 工具                       | 全球站 | 中国站 | 需要认证 | 描述                           |
@@ -328,6 +340,55 @@ npx -y @jinzcdev/leetcode-mcp-server --transport http --port 3000 --site cn --se
   - `noteId`：要更新的笔记 ID（字符串，必需）
   - `content`：笔记的新内容，支持 markdown 格式（字符串，必需）
   - `summary`：可选的新简短摘要或标题（字符串，可选）
+
+### 题单
+
+题单通过 `favoriteSlug` 标识，即题单 URL 中 `/problem-list/` 后面的路径片段。
+
+- **list_problem_lists** - 获取当前用户的题单列表
+
+  - `includeCollected`：是否同时返回从其他用户收藏的题单（布尔值，可选，默认：false）
+
+- **get_problem_list** - 获取题单的基本信息及其中一页题目
+
+  - `favoriteSlug`：题单的 slug（字符串，必需）
+  - `limit`：返回的最大题目数量（数字，可选，默认：50）
+  - `skip`：要跳过的题目数量（数字，可选，默认：0）
+  - `searchKeyword`：按标题过滤题目的关键字（字符串，可选）
+  - `sortField`：排序字段：`CUSTOM`（网页上显示的顺序）、`FRONTEND_ID`（题号）、`DIFFICULTY`、`AC_RATE`、`FREQUENCY` 或 `CONTEST_POINT`（字符串，可选，默认：`CUSTOM`）
+  - `sortOrder`：`ASCENDING` 或 `DESCENDING`（字符串，可选，默认：`ASCENDING`）
+
+- **create_problem_list** - 创建新题单
+
+  - `name`：题单名称（字符串，必需）
+  - `description`：题单描述（字符串，可选，默认：""）
+  - `isPublic`：是否公开（布尔值，可选，默认：false）
+  - `questionSlugs`：创建后立即加入的题目 slug（字符串数组，可选）
+  - `questionIds`：创建后立即加入的题号，例如 `[1, 1143]`；无法解析的题号会在 `unresolved` 中返回（字符串或数字数组，可选）
+
+- **update_problem_list** - 重命名题单、修改描述或切换公开状态（至少提供一个可选字段）
+
+  - `favoriteSlug`：题单的 slug（字符串，必需）
+  - `name`：新名称（字符串，可选）
+  - `description`：新描述（字符串，可选）
+  - `isPublic`：新的公开状态（布尔值，可选）
+
+- **add_problems_to_list** - 向题单中添加题目（`questionSlugs` / `questionIds` 至少提供一个；题目按给定顺序追加，slug 在前）
+
+  - `favoriteSlug`：题单的 slug（字符串，必需）
+  - `questionSlugs`：要添加的题目 slug，例如 `["two-sum"]`（字符串数组，可选）
+  - `questionIds`：要添加的题号，例如 `[1, 1143]` 或 `["LCP 82"]`；无法解析的题号会在 `unresolved` 中返回（字符串或数字数组，可选）
+
+- **remove_problems_from_list** - 从题单中移除题目
+
+  - `favoriteSlug`：题单的 slug（字符串，必需）
+  - `questionSlugs`：要移除的题目 slug（字符串数组，必需）
+
+- **reorder_problem_list** - 调整题单内题目的顺序（`sortField` / `questionSlugs` 二选一；每次请求移动一道题）
+  - `favoriteSlug`：题单的 slug（字符串，必需）
+  - `sortField`：按该字段对整个题单排序：`FRONTEND_ID`、`DIFFICULTY`、`AC_RATE`、`FREQUENCY` 或 `CONTEST_POINT`（字符串，可选）
+  - `sortOrder`：`ASCENDING` 或 `DESCENDING`（字符串，可选，默认：`ASCENDING`）
+  - `questionSlugs`：按给定顺序移动到题单最前面的题目 slug，其余题目保持原有相对顺序（字符串数组，可选）
 
 ### 题解
 

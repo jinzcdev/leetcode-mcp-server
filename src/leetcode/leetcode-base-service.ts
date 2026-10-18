@@ -1,3 +1,8 @@
+import type {
+    FetchFavoriteQuestionsOptions,
+    ReorderFavoriteQuestionsOptions
+} from "./favorite-api.js";
+
 /**
  * Base interface for LeetCode API service implementations.
  * Defines the common methods that all LeetCode service implementations must provide,
@@ -288,5 +293,152 @@ export interface LeetCodeBaseService {
         noteId: string,
         content: string,
         summary: string
+    ): Promise<any>;
+
+    /**
+     * Retrieves the authenticated user's problem lists ("favorites").
+     * Available on both LeetCode Global and LeetCode CN.
+     *
+     * @param options.includeCollected - Also return lists the user saved from other creators
+     * @returns Promise resolving to `{ created, collected? }` pages of problem lists
+     * @throws Error if not authenticated
+     */
+    fetchMyFavoriteLists(options?: {
+        includeCollected?: boolean;
+    }): Promise<any>;
+
+    /**
+     * Retrieves the metadata of a single problem list.
+     * Available on both LeetCode Global and LeetCode CN.
+     *
+     * @param favoriteSlug - Slug of the problem list (URL segment after /problem-list/)
+     * @returns Promise resolving to the list metadata
+     * @throws Error if not authenticated or the list is not found
+     */
+    fetchFavoriteDetail(favoriteSlug: string): Promise<any>;
+
+    /**
+     * Retrieves a page of the questions in a problem list.
+     * Available on both LeetCode Global and LeetCode CN.
+     *
+     * @param favoriteSlug - Slug of the problem list
+     * @param options.limit - Maximum number of questions to return
+     * @param options.skip - Number of questions to skip (for pagination)
+     * @param options.searchKeyword - Optional keyword to filter questions by title
+     * @param options.sortField - CUSTOM (website order, default), FRONTEND_ID,
+     *   DIFFICULTY, AC_RATE, FREQUENCY or CONTEST_POINT
+     * @param options.sortOrder - ASCENDING (default) or DESCENDING
+     * @returns Promise resolving to `{ hasMore, totalLength, questions }`
+     * @throws Error if not authenticated
+     */
+    fetchFavoriteQuestions(
+        favoriteSlug: string,
+        options?: FetchFavoriteQuestionsOptions
+    ): Promise<any>;
+
+    /**
+     * Resolves problem numbers (the ids shown on the website, e.g. "1143" or
+     * "LCP 82") to title slugs. Numbers are looked up in batches through the
+     * problem set search; a number is resolved only by an exact frontend id
+     * match. Available on both LeetCode Global and LeetCode CN; the search
+     * rejects anonymous requests on both sites.
+     *
+     * @param questionIds - Problem numbers as numbers or strings
+     * @returns Promise resolving to `{ resolved, unresolved }`
+     * @throws Error if not authenticated
+     */
+    resolveQuestionsByFrontendId(
+        questionIds: Array<string | number>
+    ): Promise<any>;
+
+    /**
+     * Rewrites the custom order of a problem list, either by a sort field
+     * (whole list) or by an explicit list of slugs to move to the top.
+     * Available on both LeetCode Global and LeetCode CN.
+     *
+     * @param favoriteSlug - Slug of the problem list
+     * @param options.sortField - Sort the whole list by this field
+     * @param options.sortOrder - ASCENDING (default) or DESCENDING
+     * @param options.questionSlugs - Slugs to move to the top, in this order
+     * @returns Promise resolving to the order before/after and every move made
+     * @throws Error if not authenticated, options are invalid or a slug is not in the list
+     */
+    reorderFavoriteQuestions(
+        favoriteSlug: string,
+        options: ReorderFavoriteQuestionsOptions
+    ): Promise<any>;
+
+    /**
+     * Creates a new, empty problem list for the authenticated user.
+     * Available on both LeetCode Global and LeetCode CN.
+     *
+     * @param options.name - Display name of the list
+     * @param options.description - Optional description
+     * @param options.isPublic - Whether the list is publicly visible (default: false)
+     * @returns Promise resolving to `{ ok, error, favoriteSlug }`
+     * @throws Error if not authenticated
+     */
+    createFavorite(options: {
+        name: string;
+        description?: string;
+        isPublic?: boolean;
+    }): Promise<any>;
+
+    /**
+     * Renames a problem list and/or updates its description.
+     * Available on both LeetCode Global and LeetCode CN.
+     *
+     * @param favoriteSlug - Slug of the problem list
+     * @param name - New (or unchanged) display name; required by LeetCode on every call
+     * @param description - New (or unchanged) description
+     * @returns Promise resolving to `{ ok, error }`
+     * @throws Error if not authenticated
+     */
+    updateFavoriteNameDescription(
+        favoriteSlug: string,
+        name: string,
+        description?: string
+    ): Promise<any>;
+
+    /**
+     * Changes the public visibility of a problem list.
+     * Available on both LeetCode Global and LeetCode CN.
+     *
+     * @param favoriteSlug - Slug of the problem list
+     * @param isPublic - True to make the list public, false for private
+     * @returns Promise resolving to `{ ok, error }`
+     * @throws Error if not authenticated
+     */
+    updateFavoriteIsPublic(
+        favoriteSlug: string,
+        isPublic: boolean
+    ): Promise<any>;
+
+    /**
+     * Adds questions to a problem list.
+     * Available on both LeetCode Global and LeetCode CN.
+     *
+     * @param favoriteSlug - Slug of the problem list
+     * @param questionSlugs - Title slugs of the questions to add (e.g. "two-sum")
+     * @returns Promise resolving to `{ ok, error }`
+     * @throws Error if not authenticated
+     */
+    addQuestionsToFavorite(
+        favoriteSlug: string,
+        questionSlugs: string[]
+    ): Promise<any>;
+
+    /**
+     * Removes questions from a problem list, one request per question.
+     * Available on both LeetCode Global and LeetCode CN.
+     *
+     * @param favoriteSlug - Slug of the problem list
+     * @param questionSlugs - Title slugs of the questions to remove
+     * @returns Promise resolving to one `{ questionSlug, ok, error }` entry per question
+     * @throws Error if not authenticated
+     */
+    removeQuestionsFromFavorite(
+        favoriteSlug: string,
+        questionSlugs: string[]
     ): Promise<any>;
 }
