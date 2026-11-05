@@ -1,3 +1,19 @@
+# [1.5.0](https://github.com/jinzcdev/leetcode-mcp-server/compare/v1.4.0...v1.5.0) (2026-11-05)
+
+
+### Bug Fixes
+
+* **favorites:** enable pagination in favoriteQuestionList ([80d6d23](https://github.com/jinzcdev/leetcode-mcp-server/commit/80d6d23c367a8e4734dc052b5c80c8ba98a09b4f))
+* validate usernames in user profile tool ([9a076c9](https://github.com/jinzcdev/leetcode-mcp-server/commit/9a076c9edde44d0ae623b86fbaa9f6ee7965df8d))
+
+
+### Features
+
+* **favorites:** add problem list tools for Global and CN ([0d4bd68](https://github.com/jinzcdev/leetcode-mcp-server/commit/0d4bd68beec26a4ad703ff5432f2b49bbb26038e))
+* **favorites:** add problems by number, sort and reorder problem lists ([4468903](https://github.com/jinzcdev/leetcode-mcp-server/commit/4468903ab84d9b87860f61a3741d6d9f8687e896))
+
+
+
 # Changelog
 
 ## [1.4.0](https://github.com/jinzcdev/leetcode-mcp-server/compare/v1.3.0...v1.4.0) (2026-07-12)
