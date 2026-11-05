@@ -32,5 +32,10 @@ jobs:
             echo "::error::Package version ($PKG_VERSION) does not match release tag ($GITHUB_REF_VERSION)"
             exit 1
           fi
+      - name: Check OIDC environment
+        run: |
+          npm --version
+          test -n "$ACTIONS_ID_TOKEN_REQUEST_URL" && echo "OIDC request URL present" || echo "OIDC request URL MISSING"
+          test -n "$ACTIONS_ID_TOKEN_REQUEST_TOKEN" && echo "OIDC request token present" || echo "OIDC request token MISSING"
       - name: Publish to NPM
-        run: npm publish --provenance --access public
+        run: npm publish --provenance --access public --loglevel verbose
