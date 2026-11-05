@@ -17,6 +17,10 @@ export class UserToolRegistry extends ToolRegistry {
             {
                 username: z
                     .string()
+                    .regex(
+                        /^[A-Za-z0-9_-]+$/,
+                        "Username may contain only letters, numbers, underscores, and hyphens."
+                    )
                     .describe(
                         "LeetCode username (case-sensitive). Public profile lookup; no authentication required."
                     )
@@ -29,7 +33,6 @@ export class UserToolRegistry extends ToolRegistry {
                         {
                             type: "text",
                             text: JSON.stringify({
-                                username: username,
                                 profile: data
                             })
                         }
