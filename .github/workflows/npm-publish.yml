@@ -37,5 +37,7 @@ jobs:
           npm --version
           test -n "$ACTIONS_ID_TOKEN_REQUEST_URL" && echo "OIDC request URL present" || echo "OIDC request URL MISSING"
           test -n "$ACTIONS_ID_TOKEN_REQUEST_TOKEN" && echo "OIDC request token present" || echo "OIDC request token MISSING"
+          TOKEN=$(curl -sS -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=npm:registry.npmjs.org" | jq -r .value)
+          echo "$TOKEN" | cut -d. -f2 | tr '_-' '/+' | base64 -d 2>/dev/null | jq '{repository, repository_owner, workflow_ref, ref, repository_visibility}'
       - name: Publish to NPM
         run: npm publish --provenance --access public --loglevel verbose
