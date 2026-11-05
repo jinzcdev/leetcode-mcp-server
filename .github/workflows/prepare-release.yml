@@ -64,6 +64,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      actions: write
     steps:
       - uses: actions/checkout@v4
         with:
@@ -101,3 +102,20 @@ jobs:
           name: ${{ steps.version.outputs.tag }}
           body_path: release-notes.md
           generate_release_notes: false
+
+      # Release events created with GITHUB_TOKEN do not trigger other
+      # workflows, so dispatch the publish workflow explicitly. Unlike other
+      # events, workflow_dispatch always creates a new run even when it is
+      # triggered with GITHUB_TOKEN.
+      - name: Trigger npm publish
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          for attempt in 1 2 3 4 5; do
+            if gh workflow run npm-publish.yml --ref "${{ steps.version.outputs.tag }}"; then
+              exit 0
+            fi
+            echo "Dispatch attempt $attempt failed, retrying..."
+            sleep 5
+          done
+          exit 1
