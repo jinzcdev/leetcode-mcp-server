@@ -44,7 +44,7 @@
         ]
     },
     "dependencies": {
-        "@modelcontextprotocol/sdk": "^1.29.0",
+        "@modelcontextprotocol/sdk": "^1.32.2",
         "leetcode-query": "^2.0.1",
         "minimist": "^1.2.8",
         "pino": "^9.6.0",

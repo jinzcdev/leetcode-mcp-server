@@ -116,3 +116,10 @@ export const PROBLEM_TAGS: string[] = [
     "biconnected-component",
     "rejection-sampling"
 ];
+
+/**
+ * Largest number of elements a single tool-input array may carry. The MCP SDK
+ * counts array elements and object keys in a call's arguments, so this is the
+ * declared ceiling the server advertises and enforces for its input arrays.
+ */
+export const MAX_TOOL_INPUT_ARRAY_ITEMS = 1000;

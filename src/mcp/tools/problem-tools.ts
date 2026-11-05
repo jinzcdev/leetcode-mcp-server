@@ -1,6 +1,10 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { PROBLEM_CATEGORIES, PROBLEM_TAGS } from "../../common/constants.js";
+import {
+    MAX_TOOL_INPUT_ARRAY_ITEMS,
+    PROBLEM_CATEGORIES,
+    PROBLEM_TAGS
+} from "../../common/constants.js";
 import { LeetCodeBaseService } from "../../leetcode/leetcode-base-service.js";
 import { ToolRegistry } from "./tool-registry.js";
 
@@ -74,6 +78,7 @@ export class ProblemToolRegistry extends ToolRegistry {
                     ),
                 tags: z
                     .array(z.enum(PROBLEM_TAGS as [string]))
+                    .max(MAX_TOOL_INPUT_ARRAY_ITEMS)
                     .optional()
                     .describe(
                         "Topic tags to filter by, e.g. ['array', 'dynamic-programming']. Omit for no tag filter."

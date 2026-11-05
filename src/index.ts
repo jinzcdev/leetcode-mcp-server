@@ -5,6 +5,7 @@ import minimist from "minimist";
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { MAX_TOOL_INPUT_ARRAY_ITEMS } from "./common/constants.js";
 import { LeetCodeBaseService } from "./leetcode/leetcode-base-service.js";
 import { LeetCodeServiceFactory } from "./leetcode/leetcode-service-factory.js";
 import { registerProblemResources } from "./mcp/resources/problem-resources.js";
@@ -119,15 +120,37 @@ function getPackageJson() {
 }
 
 /**
+ * Number of top-level keys in the search_problems input schema: category,
+ * tags, difficulty, searchKeywords, limit and offset. The SDK counts the root
+ * arguments object's own keys as well as every array element, so the element
+ * ceiling is sized one above the largest allowed input of that tool.
+ */
+const SEARCH_PROBLEMS_ENVELOPE_KEYS = 6;
+
+/**
+ * Tool-input element ceiling: the 1,000-element array bound declared on
+ * search_problems.tags plus that tool's six envelope keys plus one, so the
+ * schema's own declared maximum is accepted while a larger call is refused by
+ * the SDK before argument validation.
+ */
+const MAX_TOOL_INPUT_ELEMENTS =
+    MAX_TOOL_INPUT_ARRAY_ITEMS + SEARCH_PROBLEMS_ENVELOPE_KEYS + 1;
+
+/**
  * Creates and configures the LeetCode MCP Server instance.
  */
 function createMcpServer(leetcodeService: LeetCodeBaseService): McpServer {
     const packageJSON = getPackageJson();
 
-    const server = new McpServer({
-        name: "LeetCode MCP Server",
-        version: packageJSON.version
-    });
+    const server = new McpServer(
+        {
+            name: "LeetCode MCP Server",
+            version: packageJSON.version
+        },
+        {
+            maxToolInputElements: MAX_TOOL_INPUT_ELEMENTS
+        }
+    );
 
     registerProblemTools(server, leetcodeService);
     registerUserTools(server, leetcodeService);
