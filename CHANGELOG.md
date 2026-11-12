@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.5.1](https://github.com/jinzcdev/leetcode-mcp-server/compare/v1.5.0...v1.5.1) (2026-11-12)
+
+### Bug Fixes
+
+- **deps:** update vite to 6.4.6 (GHSA-587h-7wmj-h5pm) ([4d91ace](https://github.com/jinzcdev/leetcode-mcp-server/commit/4d91ace78536f2aa3b61fd390ac20e07697421fe))
+
 ## [1.5.0](https://github.com/jinzcdev/leetcode-mcp-server/compare/v1.4.0...v1.5.0) (2026-11-05)
 
 ### Bug Fixes
